@@ -1,0 +1,13 @@
+<resources>
+  <string name="app_name">Destiny.gg</string>
+  <string name="stream_info.playing">Playing %1$s</string>
+
+  <!-- Generic -->
+  <string name="generic.stream_info.offline_title">Stream is offline</string>
+
+  <!-- Feed -->
+  <string name="controller.feed.tab_title">Feed</string>
+
+  <!-- Schedule -->
+  <string name="controller.schedule.tab_title">Schedule</string>
+</resources>

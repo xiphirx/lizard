@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chat_message_message"
+    style="@style/TextAppearance.AppCompat.Body1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="2dp"
+    android:paddingTop="2dp"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
+    tools:text="Destiny: kys in real life"/>

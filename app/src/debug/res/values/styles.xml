@@ -1,0 +1,12 @@
+<resources>
+  <style name="LayoutPreview" parent="BaseTheme.Material.Light">
+    <item name="colorPrimary">@color/theme.default.colorPrimary</item>
+    <item name="colorPrimaryDark">@color/theme.default.colorPrimaryDark</item>
+    <item name="colorAccent">@color/theme.default.colorAccent</item>
+  </style>
+  <style name="LayoutPreview.Dark" parent="BaseTheme.Material.Dark">
+    <item name="colorPrimary">@color/theme.default.colorPrimary</item>
+    <item name="colorPrimaryDark">@color/theme.default.colorPrimaryDark</item>
+    <item name="colorAccent">@color/theme.default.colorAccent</item>
+  </style>
+</resources>

@@ -1,0 +1,84 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+  compileSdkVersion versions.compileSdk
+  buildToolsVersion versions.buildTools
+
+  defaultConfig {
+    applicationId "gg.destiny.lizard"
+    minSdkVersion versions.minSdk
+    targetSdkVersion versions.targetSdk
+    versionCode versions.versionCode
+    versionName versions.versionName
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+
+  sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+  }
+
+  applicationVariants.all { variant ->
+    variant.buildConfigField "String", "TWITCH_CLIENT_ID", "\"$TWITCH_CLIENT_ID\""
+    variant.buildConfigField "String", "TWITCH_STREAM_ID", "\"$TWITCH_STREAM_ID\""
+
+    def mode = variant.buildType.name.toLowerCase().equals("debug") ? "debug" : "release"
+    def adbExe = android.getAdbExe().toString()
+    ["emu", "dev"].each { device ->
+      def isEmulator = device == "emu"
+      def adbTarget = isEmulator ? "-e" : "-d"
+      def version = "app-${mode}.apk"
+      def apk = variant.outputs.find { it.outputFile.name.toLowerCase().endsWith(version) }
+
+      if (apk == null) return
+
+      task "install$mode$device"(dependsOn: "assemble${mode.capitalize()}", type: Exec) {
+        commandLine adbExe, adbTarget, "install", "-r", apk.outputFile
+      }
+      task "run$mode$device"(dependsOn: "install$mode$device", type: Exec) {
+        commandLine adbExe, adbTarget, "shell", "monkey", "-p", variant.applicationId, "-c", "android.intent.category.LAUNCHER", "1"
+      }
+    }
+  }
+}
+
+dependencies {
+  compile deps.appCompat
+  compile deps.design
+  compile deps.cardView
+  compile deps.annotations
+  compile deps.kotlinStdlib
+  compile deps.timberkt
+  compile deps.glide
+  compile deps.flexadapter
+  compile deps.jodatime
+
+  compile deps.conductor
+  compile deps.conductorSupport
+
+  compile deps.moshi
+  compile deps.moshiKotlin
+
+  compile deps.okhttp
+  compile deps.okhttpLogInterceptor
+
+  compile deps.retrofit
+  compile deps.retrofitRxAdapter
+  compile deps.retrofitScalarsConverter
+  compile deps.retrofitMoshiConverter
+
+  compile deps.rxJava
+  compile deps.rxAndroid
+  compile deps.rxRelay
+}
+
+repositories {
+  mavenCentral()
+}

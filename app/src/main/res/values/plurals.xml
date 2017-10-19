@@ -1,0 +1,6 @@
+<resources>
+  <plurals name="stream_info.viewers" parent="">
+    <item quantity="one">%1$s viewer</item>
+    <item quantity="other">%1$s viewers</item>
+  </plurals>
+</resources>

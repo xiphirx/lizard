@@ -1,0 +1,23 @@
+<resources>
+    <style name="EmptyBase">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+    <style name="EmptyBase.Translucent">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    <style name="BaseTheme.Material.Dark" parent="Theme.AppCompat">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="BaseTheme.Material.Light" parent="Theme.AppCompat.Light">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Default">
+        <item name="colorPrimary">@color/theme.default.colorPrimary</item>
+        <item name="colorPrimaryDark">@color/theme.default.colorPrimaryDark</item>
+        <item name="colorAccent">@color/theme.default.colorAccent</item>
+    </style>
+</resources>
