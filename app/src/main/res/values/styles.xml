@@ -19,5 +19,6 @@
         <item name="colorPrimary">@color/theme.default.colorPrimary</item>
         <item name="colorPrimaryDark">@color/theme.default.colorPrimaryDark</item>
         <item name="colorAccent">@color/theme.default.colorAccent</item>
+        <item name="android:windowBackground">@color/theme.default.windowColor</item>
     </style>
 </resources>

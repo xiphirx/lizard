@@ -7,7 +7,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="2dp"
-    android:paddingTop="2dp"
+    android:paddingTop="4dp"
     android:paddingStart="8dp"
     android:paddingEnd="8dp"
+    android:textColorLink="?attr/colorAccent"
     tools:text="Destiny: kys in real life"/>

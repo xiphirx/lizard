@@ -5,12 +5,17 @@ import android.text.SpannableStringBuilder
 import java.util.ArrayDeque
 
 /** Wrapper around [SpannableStringBuilder]'s horrid API */
-class Spanner() {
+class Spanner {
   private val builder = SpannableStringBuilder()
   private val stack = ArrayDeque<Pair<Int, Any>>()
 
   fun append(charSequence: CharSequence): Spanner {
     builder.append(charSequence)
+    return this
+  }
+
+  fun append(char: Char): Spanner {
+    builder.append(char)
     return this
   }
 

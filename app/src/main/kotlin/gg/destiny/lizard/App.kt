@@ -3,9 +3,11 @@ package gg.destiny.lizard
 import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
 import android.os.StrictMode
+import android.support.v4.content.ContextCompat
 import com.github.ajalt.timberkt.d
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
@@ -20,13 +22,11 @@ class App : Application() {
     val OKHTTP = OkHttpClient()
     val MOSHI = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
     val TWITCH_TV = TwitchTvApi(OKHTTP, MOSHI)
-    lateinit var EMOTE_SHEET: Bitmap
   }
 
   override fun onCreate() {
     super.onCreate()
     INSTANCE = this
-    EMOTE_SHEET = BitmapFactory.decodeResource(INSTANCE.resources, R.raw.emoticons)
     if (BuildConfig.DEBUG) {
       StrictMode.enableDefaults()
       Timber.plant(Timber.DebugTree())

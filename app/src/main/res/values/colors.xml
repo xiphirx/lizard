@@ -6,5 +6,6 @@
   <!-- Default theme -->
   <color name="theme.default.colorPrimary">#528cc7</color>
   <color name="theme.default.colorPrimaryDark">#2f3849</color>
-  <color name="theme.default.colorAccent">#121212</color>
+  <color name="theme.default.colorAccent">#08c</color>
+  <color name="theme.default.windowColor">#080808</color>
 </resources>

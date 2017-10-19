@@ -1,15 +1,15 @@
 package gg.destiny.lizard.chat
 
 import android.graphics.Color
-import android.graphics.Rect
+import android.support.v4.text.util.LinkifyCompat
+import android.text.method.LinkMovementMethod
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
-import android.text.style.ImageSpan
+import android.text.util.Linkify
 import android.widget.TextView
 import com.github.ajalt.flexadapter.FlexAdapter
 import com.github.ajalt.flexadapter.register
 import gg.destiny.lizard.R
-import gg.destiny.lizard.base.extensions.dp
 import gg.destiny.lizard.text.Spanner
 import kotlinx.android.synthetic.main.item_chat_message.view.chat_message_message
 
@@ -21,7 +21,7 @@ fun createChatAdapter() =
     }
 
 private fun ChatMessage.Message.bind(message: TextView) {
-  message.text = Spanner().pushSpan(ForegroundColorSpan(0xFF666666.toInt()))
+  val spanner = Spanner().pushSpan(ForegroundColorSpan(0xFF666666.toInt()))
       .pushSpan(AbsoluteSizeSpan(12, true))
       .append("$formattedTime ")
       .popSpan()
@@ -29,10 +29,23 @@ private fun ChatMessage.Message.bind(message: TextView) {
       .pushSpan(ForegroundColorSpan(colorForFeatures(features)))
       .append(nick)
       .popSpan()
-      .pushPopSpan(ImageSpan(pepoThink.drawable, ImageSpan.ALIGN_BASELINE))
       .pushSpan(ForegroundColorSpan(0xFFAAAAAA.toInt()))
-      .append(": $data")
-      .build()
+      .append(": ")
+
+  data.split(' ')
+      .forEachIndexed { index, s ->
+        val emote = EMOTE_MAP[s]
+        if (emote != null) {
+          spanner.append(' ')
+              .pushPopSpan(emote.span)
+              .append(' ')
+        } else {
+          spanner.append(if (index != 0) " $s" else s)
+        }
+      }
+
+  message.text = spanner.build()
+  LinkifyCompat.addLinks(message, Linkify.WEB_URLS)
 }
 
 private fun colorForFeatures(features: List<String>) =

@@ -59,7 +59,7 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
           it.toolbar?.title = model.title
           it.stream_viewer_num?.text = "${model.viewerCount}"
           registerChatObservable(model.chatMessages)
-//          setupStream(model.url)
+          setupStream(model.url)
         }
         is StreamModel.Offline -> {
           it.stream_chat_offline_message.visibility = View.VISIBLE
