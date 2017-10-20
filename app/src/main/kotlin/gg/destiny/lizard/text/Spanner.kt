@@ -26,7 +26,7 @@ class Spanner {
     return this
   }
 
-  fun pushPopSpan(span: Any) = pushSpan(span).append(".").popSpan()
+  fun pushPopSpan(span: Any) = pushSpan(span).append('.').popSpan()
 
   fun popSpan(): Spanner {
     val (position, span) = stack.pop()
