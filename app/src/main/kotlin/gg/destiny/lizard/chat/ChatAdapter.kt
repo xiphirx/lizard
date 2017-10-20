@@ -2,7 +2,6 @@ package gg.destiny.lizard.chat
 
 import android.graphics.Color
 import android.support.v4.text.util.LinkifyCompat
-import android.text.method.LinkMovementMethod
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.text.util.Linkify
