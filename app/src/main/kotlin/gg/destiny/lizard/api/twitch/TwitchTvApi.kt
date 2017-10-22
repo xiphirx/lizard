@@ -14,6 +14,10 @@ import retrofit2.http.Headers
 import retrofit2.http.Path
 
 class TwitchTvApi(okHttp: OkHttpClient, moshi: Moshi) {
+  companion object {
+    const val BASE_URL = "https://api.twitch.tv"
+  }
+
   private interface Endpoints {
     @Headers("Client-ID: ${BuildConfig.TWITCH_CLIENT_ID}")
     @GET("kraken/streams/{streamId}")
@@ -25,7 +29,7 @@ class TwitchTvApi(okHttp: OkHttpClient, moshi: Moshi) {
   init {
     val interceptor = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
     val retrofit = Retrofit.Builder()
-        .baseUrl("https://api.twitch.tv")
+        .baseUrl(BASE_URL)
         .client(okHttp.newBuilder()
             .addInterceptor(interceptor)
             .build())

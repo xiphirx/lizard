@@ -3,6 +3,9 @@
   <color name="white">#ffffff</color>
   <color name="red">#ff0000</color>
   <color name="black87">#de000000</color>
+  <!-- Twitch TV -->
+  <color name="twitchtv.primary">#ff6441a4</color>
+  <color name="twitchtv.secondary">@color/white</color>
   <!-- Default theme -->
   <color name="theme.default.colorPrimary">#528cc7</color>
   <color name="theme.default.colorPrimaryDark">#2f3849</color>

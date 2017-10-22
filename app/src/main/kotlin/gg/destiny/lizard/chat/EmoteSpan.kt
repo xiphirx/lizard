@@ -9,11 +9,7 @@ import android.text.style.DynamicDrawableSpan
 import gg.destiny.lizard.base.extensions.scope
 
 class EmoteSpan(private val drawable: Drawable) : DynamicDrawableSpan() {
-  private val bounds: Rect
-  init {
-    drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-    bounds = Rect()
-  }
+  private val bounds: Rect = Rect()
 
   override fun getDrawable() = drawable
 

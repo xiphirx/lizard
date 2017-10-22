@@ -7,13 +7,15 @@ import gg.destiny.lizard.api.twitch.TwitchTvApi
 import io.reactivex.Scheduler
 import io.reactivex.schedulers.Schedulers
 
-class StreamPresenter(private val twitchTvApi: TwitchTvApi = App.TWITCH_TV,
-                      private val chat: Chat = Chat()) :
-    BasePresenter<StreamView, StreamModel>() {
+class StreamPresenter(
+    private val streamKey: String = "destiny",
+    private val twitchTvApi: TwitchTvApi = App.TWITCH_TV,
+    private val chat: Chat = Chat()
+) : BasePresenter<StreamView, StreamModel>() {
   override fun bindIntents(scheduler: Scheduler) {
     val streamInfoObservable = intent { it.firstLoad() }
         .flatMap {
-          twitchTvApi.getStreamInformation("destiny")
+          twitchTvApi.getStreamInformation(streamKey)
               .map {
                 val stream = it.stream
                 if (stream != null) {
@@ -21,7 +23,7 @@ class StreamPresenter(private val twitchTvApi: TwitchTvApi = App.TWITCH_TV,
                       title = stream.channel.status,
                       viewerCount = stream.viewers,
                       chatMessages = chat.messages(),
-                      url = "https://player.twitch.tv/?channel=destiny")
+                      url = "https://player.twitch.tv/?channel=$streamKey&html5")
                 } else {
                   StreamModel.Offline(chat.messages())
                 }

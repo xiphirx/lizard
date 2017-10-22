@@ -5,7 +5,12 @@ import gg.destiny.lizard.App
 import gg.destiny.lizard.R
 
 data class Emote(val id: Int, val x: Int, val y: Int, val width: Int, val height: Int) {
-  val drawable: Drawable by lazy { App.INSTANCE.getDrawable(id) }
+  val drawable: Drawable by lazy {
+    val drawable = App.INSTANCE.getDrawable(id)
+    drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+    return@lazy drawable
+  }
+
   val span by lazy { EmoteSpan(drawable) }
 }
 

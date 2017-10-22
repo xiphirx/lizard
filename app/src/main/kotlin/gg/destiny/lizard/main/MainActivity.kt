@@ -13,6 +13,7 @@ import gg.destiny.lizard.R
 import gg.destiny.lizard.account.AccountInfo
 import gg.destiny.lizard.account.SubscriptionTier
 import gg.destiny.lizard.base.activity.BaseActivity
+import gg.destiny.lizard.login.LoginController
 import gg.destiny.lizard.stream.StreamController
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.controller_stream.*

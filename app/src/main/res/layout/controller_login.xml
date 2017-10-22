@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <gg.destiny.lizard.login.EmoteFireView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@drawable/bg_gradient_account_info"/>
+
+  <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:layout_marginTop="48dp"
+      android:src="@drawable/logo_banner"/>
+
+  <TextView
+      style="@style/TextAppearance.AppCompat.Title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:gravity="center"
+      android:text="@string/login_controller.login_with"/>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="bottom"
+      android:layout_marginBottom="48dp"
+      android:gravity="center"
+      android:paddingStart="32dp"
+      android:paddingEnd="32dp"
+      android:orientation="horizontal">
+
+    <ImageButton
+        android:id="@+id/login_twitchtv"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/ic_logo_twitchtv"
+        android:tint="@color/twitchtv.secondary"
+        android:backgroundTint="@color/twitchtv.primary"/>
+
+  </LinearLayout>
+
+</FrameLayout>

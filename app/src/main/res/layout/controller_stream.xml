@@ -19,6 +19,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:visibility="gone"
         android:background="@drawable/bg_gradient_black_transparent_down"/>
     <LinearLayout
         android:orientation="horizontal"
@@ -26,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:gravity="center_vertical"
+        android:visibility="gone"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:paddingBottom="8dp"

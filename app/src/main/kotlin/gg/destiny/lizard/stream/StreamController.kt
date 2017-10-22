@@ -5,7 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
+import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.github.ajalt.timberkt.d
 import com.github.ajalt.timberkt.e
 import gg.destiny.lizard.R
 import gg.destiny.lizard.base.controller.BaseController
@@ -42,11 +46,17 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
       toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp)
       with(stream_web_view.settings) {
         javaScriptEnabled = true
-        useWideViewPort = true
-        loadWithOverviewMode = true
+        mediaPlaybackRequiresUserGesture = false
+        domStorageEnabled = true
+        allowContentAccess = true
+        allowFileAccess = true
       }
-      stream_web_view.webChromeClient = WebChromeClient()
-      stream_web_view.webViewClient = WebViewClient()
+      stream_web_view.webViewClient = object : WebViewClient() {
+        override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+          view.loadUrl(request.url.toString())
+          return true
+        }
+      }
     }
   }
 
@@ -63,7 +73,6 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
         }
         is StreamModel.Offline -> {
           it.stream_chat_offline_message.visibility = View.VISIBLE
-          it.stream_web_view?.visibility = View.GONE
           registerChatObservable(model.chatMessages)
           setupStream(null)
         }

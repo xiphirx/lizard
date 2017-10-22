@@ -42,6 +42,9 @@ class AspectRatioFrameLayout : FrameLayout {
 
   override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
     super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-    setMeasuredDimension(measuredWidth, (measuredWidth / ratio).toInt())
+    val widthSpec = MeasureSpec.makeMeasureSpec(measuredWidth, MeasureSpec.EXACTLY)
+    val heightSpec = MeasureSpec.makeMeasureSpec(
+        (measuredWidth / ratio).toInt(), MeasureSpec.EXACTLY)
+    super.onMeasure(widthSpec, heightSpec)
   }
 }
