@@ -40,7 +40,7 @@ class MainActivity : BaseActivity() {
     setContentView(R.layout.activity_main)
     router = Conductor.attachRouter(this, content_frame, savedInstance)
     if (!router.hasRootController()) {
-      router.setRoot(RouterTransaction.with(StreamController()))
+      router.setRoot(RouterTransaction.with(LoginController()))
     }
 
     drawerLayout = drawer_layout
