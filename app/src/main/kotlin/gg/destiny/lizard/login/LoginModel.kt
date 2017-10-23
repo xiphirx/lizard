@@ -1,9 +1,23 @@
 package gg.destiny.lizard.login
 
-sealed class LoginModel {
-  object Welcome : LoginModel()
+data class LoginModel(
+    val loginAuthorizeUrl: String? = null,
+    val loginRedirectSlug: String? = null,
+    val isLoading: Boolean = false,
+    val error: LoginError? = null
+)
 
-  data class RequestOAuthLogin(val authorizeUrl: String, val redirectSlug: String) : LoginModel()
-
-  object OAuthRedirectLoading : LoginModel()
+sealed class PartialState {
+  object Welcome : PartialState()
+  data class Request(val authorizeUrl: String, val redirectSlug: String) : PartialState()
+  object Loading : PartialState()
+  data class Error(val error: LoginError) : PartialState()
 }
+
+sealed class LoginError {
+  object NoInternet : LoginError()
+  data class Auth(val message: String) : LoginError()
+  data class Http(val code: Int) : LoginError()
+  object Unknown : LoginError()
+}
+

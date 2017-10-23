@@ -7,4 +7,9 @@ interface OAuth2Client {
 
   val authorizeUrl: String
   val redirectSlug: String
+
+  /** Parses the given redirection and returns the access token, or throws an exception */
+  fun parseRedirection(redirectUrl: String): String
+
+  class AuthError(val reason: String) : RuntimeException()
 }

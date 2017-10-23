@@ -1,10 +1,10 @@
 package gg.destiny.lizard.login
 
 import android.app.Dialog
+import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.github.ajalt.timberkt.Timber.d
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxrelay2.PublishRelay
 import gg.destiny.lizard.R
@@ -43,12 +43,22 @@ class LoginController : BaseController<LoginView, LoginModel, LoginPresenter>(),
     }
 
   override fun render(model: LoginModel) {
-    d { "Render model: ${model.javaClass.simpleName}" }
-    when (model) {
-      is LoginModel.Welcome -> setDisplayedChild(LoginView.FLIPPER_LOGIN_BUTTONS_INDEX)
-      is LoginModel.RequestOAuthLogin -> requestLogin(model.authorizeUrl, model.redirectSlug)
-      is LoginModel.OAuthRedirectLoading -> onOAuthRedirectLoading()
+    model.error?.let {
+      showError(it)
+      return
     }
+
+    if (model.isLoading) {
+      showLoading()
+      return
+    }
+
+    if (model.loginAuthorizeUrl != null && model.loginRedirectSlug != null) {
+      requestLogin(model.loginAuthorizeUrl, model.loginRedirectSlug)
+      return
+    }
+
+    showWelcome()
   }
 
   private fun setDisplayedChild(index: Int) {
@@ -63,8 +73,32 @@ class LoginController : BaseController<LoginView, LoginModel, LoginPresenter>(),
     }
   }
 
-  private fun onOAuthRedirectLoading() {
+  private fun showWelcome() {
+    setDisplayedChild(LoginView.FLIPPER_LOGIN_BUTTONS_INDEX)
+  }
+
+  private fun showLoading() {
     loginDialog?.dismiss()
     setDisplayedChild(LoginView.FLIPPER_LOADING_INDEX)
+  }
+
+  private fun showError(error: LoginError) {
+    loginDialog?.dismiss()
+    val context = layout.context
+    AlertDialog.Builder(context)
+        .setTitle(R.string.login_controller_error_title)
+        .apply {
+          when (error) {
+            is LoginError.NoInternet ->
+                setMessage(R.string.login_controller_error_no_internet)
+            is LoginError.Http ->
+                setMessage(
+                    context.getString(R.string.login_controller_error_http_error, error.code))
+            is LoginError.Auth ->
+                setMessage(context.getString(R.string.login_controller_error_auth, error.message))
+            is LoginError.Unknown -> setMessage(R.string.login_controller_error_unknown)
+          }
+        }
+        .show()
   }
 }

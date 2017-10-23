@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.github.ajalt.timberkt.Timber.d
 
 class OAuthLoginDialog(
     context: Context,
@@ -18,6 +19,7 @@ class OAuthLoginDialog(
   private val overrideWebViewClient = object : WebViewClient() {
     override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
       super.onPageStarted(view, url, favicon)
+      d { "Loading $url" }
       checkForRedirect(url)
     }
 

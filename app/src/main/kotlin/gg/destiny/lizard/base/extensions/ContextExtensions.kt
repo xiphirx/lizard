@@ -8,7 +8,6 @@ import android.support.annotation.StyleableRes
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 
-fun Context.string(@StringRes id: Int): String = getString(id)
 fun Context.useStyledAttributes(attrs: AttributeSet,
                                 @StyleableRes styleableRes: IntArray,
                                 useBlock: (TypedArray) -> Unit) {
