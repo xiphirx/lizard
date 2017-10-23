@@ -12,16 +12,12 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import java.security.SecureRandom
 
-class TwitchTvOOAuth2Client(
+class TwitchTvOAuth2Client(
     private val clientId: String = "hk3xmf0uwmsdhve6ylr4kjbp538pr6",
-    private val redirectUri: String = "gg.destiny.lizard://oauth.twitch",
+    override val redirectSlug: String = "gg.destiny.lizard://oauth.twitch",
     private val scopes: List<String> = listOf("user:edit"),
     private val okHttpClient: OkHttpClient = App.OKHTTP
 ) : OAuth2Client {
-
-  companion object {
-    const val REDIRECT_URI = "gg.destiny.lizard://oauth.twitch"
-  }
 
   private interface Endpoints {
     @GET("kraken/oauth2/authorize")
@@ -50,15 +46,13 @@ class TwitchTvOOAuth2Client(
     endpoints = retrofit.create(Endpoints::class.java)
   }
 
+  override val authorizeUrl: String
+    get() {
+      state = generateState()
+      return "${TwitchTvApi.BASE_URL}/kraken/oauth2/authorize?client_id=$clientId&redirect_uri=$redirectSlug&scope=user:edit&state=$state"
+    }
 
-  override fun authorizeUrl(): String {
-    state = generateState()
-    return "${TwitchTvApi.BASE_URL}/kraken/oauth2/authorize?client_id=$clientId&redirect_uri=$REDIRECT_URI&scope=user:edit&state=$state"
-  }
-
-  fun getCurrentState(): String {
-    return state
-  }
+  val getCurrentState = state
 
   private fun generateState(): String {
     val bytes = ByteArray(64)

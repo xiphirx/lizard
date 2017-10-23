@@ -55,7 +55,7 @@ class Chat(
     d { "failed ${t.fullMessage()}"}
   }
 
-  override fun onClosed(webSocket: WebSocket, code: Int, reason: String?) {
+  override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
     super.onClosed(webSocket, code, reason)
     d { "closed" }
     disconnect()

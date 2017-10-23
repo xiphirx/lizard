@@ -4,23 +4,25 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
-import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import com.github.ajalt.timberkt.d
 import com.github.ajalt.timberkt.e
 import gg.destiny.lizard.R
 import gg.destiny.lizard.base.controller.BaseController
 import gg.destiny.lizard.base.mvi.BaseView
-import gg.destiny.lizard.chat.createChatAdapter
 import gg.destiny.lizard.chat.ChatMessage
+import gg.destiny.lizard.chat.createChatAdapter
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.controller_stream.view.*
+import kotlinx.android.synthetic.main.controller_stream.view.stream_chat_count
+import kotlinx.android.synthetic.main.controller_stream.view.stream_chat_offline_message
+import kotlinx.android.synthetic.main.controller_stream.view.stream_chat_recycler_view
+import kotlinx.android.synthetic.main.controller_stream.view.stream_viewer_num
+import kotlinx.android.synthetic.main.controller_stream.view.stream_web_view
+import kotlinx.android.synthetic.main.controller_stream.view.toolbar
 
 interface StreamView : BaseView<StreamModel>
 

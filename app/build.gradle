@@ -12,6 +12,7 @@ android {
     targetSdkVersion versions.targetSdk
     versionCode versions.versionCode
     versionName versions.versionName
+    multiDexEnabled = true
   }
 
   buildTypes {
@@ -59,6 +60,8 @@ dependencies {
   compile deps.glide
   compile deps.flexadapter
   compile deps.jodatime
+  compile deps.mosby
+  compile deps.stetho
 
   compile deps.conductor
   compile deps.conductorSupport
@@ -77,6 +80,7 @@ dependencies {
   compile deps.rxJava
   compile deps.rxAndroid
   compile deps.rxRelay
+  compile deps.rxBinding
 }
 
 repositories {

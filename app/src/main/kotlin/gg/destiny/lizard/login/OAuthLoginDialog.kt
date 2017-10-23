@@ -2,18 +2,36 @@ package gg.destiny.lizard.login
 
 import android.app.Dialog
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 
-class LoginDialog(context: Context, private val authUrl: String) : Dialog(context) {
+class OAuthLoginDialog(
+    context: Context,
+    private val authUrl: String,
+    private val redirectSlug: String,
+    private val redirectListener: (String) -> Unit
+) : Dialog(context) {
   private val overrideWebViewClient = object : WebViewClient() {
+    override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
+      super.onPageStarted(view, url, favicon)
+      checkForRedirect(url)
+    }
+
     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-      view.loadUrl(request.url.toString())
+      val url = request.url.toString()
+      checkForRedirect(url)
+      view.loadUrl(url)
       return true
+    }
+
+    private fun checkForRedirect(url: String) {
+      if (url.startsWith(redirectSlug)) {
+        redirectListener(url)
+      }
     }
   }
 

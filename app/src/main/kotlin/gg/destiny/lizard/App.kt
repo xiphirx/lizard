@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.StrictMode
 import android.support.v4.content.ContextCompat
+import com.facebook.stetho.Stetho
 import com.github.ajalt.timberkt.d
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
@@ -40,5 +41,8 @@ class App : Application() {
     }
 
     JodaTimeAndroid.init(this)
+    if (BuildConfig.DEBUG) {
+      Stetho.initializeWithDefaults(this)
+    }
   }
 }

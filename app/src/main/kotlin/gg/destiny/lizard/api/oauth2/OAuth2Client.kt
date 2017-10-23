@@ -1,5 +1,10 @@
 package gg.destiny.lizard.api.oauth2
 
 interface OAuth2Client {
-  fun authorizeUrl(): String
+  interface RedirectListener {
+    fun onRedirect(url: String)
+  }
+
+  val authorizeUrl: String
+  val redirectSlug: String
 }

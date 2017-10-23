@@ -1,37 +1,70 @@
 package gg.destiny.lizard.login
 
-import android.support.v4.content.ContextCompat
+import android.app.Dialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.github.ajalt.timberkt.Timber.d
+import com.jakewharton.rxbinding2.view.RxView
+import com.jakewharton.rxrelay2.PublishRelay
 import gg.destiny.lizard.R
-import gg.destiny.lizard.api.twitch.TwitchTvOOAuth2Client
 import gg.destiny.lizard.base.controller.BaseController
+import gg.destiny.lizard.base.extensions.color
 import gg.destiny.lizard.base.extensions.tintCompoundDrawables
 import gg.destiny.lizard.base.mvi.BaseView
+import io.reactivex.Observable
 import kotlinx.android.synthetic.main.controller_login.view.login_twitchtv
+import kotlinx.android.synthetic.main.controller_login.view.login_view_flipper
 
-sealed class LoginModel {
-  object Welcome : LoginModel()
+interface LoginView : BaseView<LoginModel> {
+  companion object {
+    const val FLIPPER_LOGIN_BUTTONS_INDEX = 0
+    const val FLIPPER_LOADING_INDEX = 1
+  }
+  val twitchLoginClicks: Observable<Any>
+  val oauthRedirectUrl: Observable<String>
 }
 
-interface LoginView : BaseView<LoginModel>
-
 class LoginController : BaseController<LoginView, LoginModel, LoginPresenter>(), LoginView {
-  private val oauth = TwitchTvOOAuth2Client()
+  override val twitchLoginClicks: Observable<Any> by lazy {
+    RxView.clicks(layout.login_twitchtv)
+  }
+
+  override val oauthRedirectUrl: PublishRelay<String> = PublishRelay.create()
+
+  private val redirectListener = { url: String -> oauthRedirectUrl.accept(url) }
+  private var loginDialog: Dialog? = null
+
   override fun createPresenter() = LoginPresenter()
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View =
     inflater.inflate(R.layout.controller_login, container, false).apply {
-      with(login_twitchtv) {
-        tintCompoundDrawables(ContextCompat.getColor(activity, R.color.twitchtv_secondary))
-        setOnClickListener {
-          LoginDialog(context, oauth.authorizeUrl()).show()
-        }
-      }
+      login_twitchtv.tintCompoundDrawables(context.color(R.color.twitchtv_secondary))
     }
 
   override fun render(model: LoginModel) {
+    d { "Render model: ${model.javaClass.simpleName}" }
+    when (model) {
+      is LoginModel.Welcome -> setDisplayedChild(LoginView.FLIPPER_LOGIN_BUTTONS_INDEX)
+      is LoginModel.RequestOAuthLogin -> requestLogin(model.authorizeUrl, model.redirectSlug)
+      is LoginModel.OAuthRedirectLoading -> onOAuthRedirectLoading()
+    }
+  }
 
+  private fun setDisplayedChild(index: Int) {
+    layout.login_view_flipper.displayedChild = index
+  }
+
+  private fun requestLogin(authorizeUrl: String, redirectSlug: String) {
+    loginDialog?.dismiss()
+    loginDialog = OAuthLoginDialog(
+        layout.context, authorizeUrl, redirectSlug, redirectListener).apply {
+      show()
+    }
+  }
+
+  private fun onOAuthRedirectLoading() {
+    loginDialog?.dismiss()
+    setDisplayedChild(LoginView.FLIPPER_LOADING_INDEX)
   }
 }
