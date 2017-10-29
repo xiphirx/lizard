@@ -1,5 +1,8 @@
 package gg.destiny.lizard.account
 
-class AccountManager(private val accountStorage: AccountStorage) {
-  fun isLoggedIn() = accountStorage.getAccessToken() != null
+import gg.destiny.lizard.App
+import io.reactivex.Observable
+
+class AccountManager(private val storage: AccountStorage = App.accountStorage) {
+  fun isLoggedIn(): Observable<Boolean> = storage.sessionAvailable()
 }

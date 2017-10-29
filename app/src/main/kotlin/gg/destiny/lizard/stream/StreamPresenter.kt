@@ -1,7 +1,7 @@
 package gg.destiny.lizard.stream
 
 import gg.destiny.lizard.App
-import gg.destiny.lizard.api.twitch.TwitchTvApi
+import gg.destiny.lizard.api.TwitchTvApi
 import gg.destiny.lizard.base.mvi.BasePresenter
 import gg.destiny.lizard.chat.Chat
 import io.reactivex.Observable

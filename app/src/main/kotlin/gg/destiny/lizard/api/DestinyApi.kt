@@ -1,5 +1,6 @@
 package gg.destiny.lizard.api
 
+import gg.destiny.lizard.App
 import gg.destiny.lizard.BuildConfig
 import io.reactivex.Observable
 import okhttp3.CookieJar
@@ -15,13 +16,15 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Url
 
-class DestinyApi(okHttpClient: OkHttpClient, cookieJar: CookieJar) {
+class DestinyApi(
+    okHttpClient: OkHttpClient = App.okHttp, cookieJar: CookieJar = App.accountStorage) {
   companion object {
-    const val HOST = "https://www.destiny.gg"
+    const val HOST = "www.destiny.gg"
+    const val BASE_URL = "https://$HOST"
     // For some reason the redirect isnt https...
-    const val REDIRECT_HOST = "http://www.destiny.gg"
+    const val REDIRECT_BASE_URL = "http://$HOST"
 
-    fun oauthRedirectUri(service: LoginService) = "$REDIRECT_HOST/auth/${service.key}"
+    fun oauthRedirectUri(service: LoginService) = "$REDIRECT_BASE_URL/auth/${service.key}"
   }
 
   enum class LoginService(val key: String) {
@@ -56,7 +59,7 @@ class DestinyApi(okHttpClient: OkHttpClient, cookieJar: CookieJar) {
         .build()
 
     val retrofit = Retrofit.Builder()
-        .baseUrl(HOST)
+        .baseUrl(BASE_URL)
         .client(okHttp)
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .addConverterFactory(ScalarsConverterFactory.create())
@@ -69,5 +72,5 @@ class DestinyApi(okHttpClient: OkHttpClient, cookieJar: CookieJar) {
 
   // This is dumb, but instead of rewriting a Rx Observable for an OkHttp call, we re-create
   // the query which is far simpler
-  fun completeLogin(redirectUrl: String) = endpoints.auth(redirectUrl.substringAfter(REDIRECT_HOST))
+  fun completeLogin(redirectUrl: String) = endpoints.auth(redirectUrl.substringAfter(REDIRECT_BASE_URL))
 }

@@ -1,4 +1,4 @@
-package gg.destiny.lizard.api.twitch
+package gg.destiny.lizard.api
 
 import com.squareup.moshi.Moshi
 import gg.destiny.lizard.BuildConfig
@@ -45,14 +45,15 @@ class TwitchTvApi(okHttp: OkHttpClient, moshi: Moshi) {
 
 data class StreamInformation(val stream: Stream?)
 
-data class Stream(val _id: Long,
-                  val game: String,
-                  val viewers: Int,
-                  val video_height: Int,
-                  val average_fps: Float,
-                  val delay: Int,
-                  val preview: StreamPreview,
-                  val channel: StreamChannel)
+data class Stream(
+    val _id: Long,
+    val game: String,
+    val viewers: Int,
+    val video_height: Int,
+    val average_fps: Float,
+    val delay: Int,
+    val preview: StreamPreview,
+    val channel: StreamChannel)
 
 data class StreamPreview(val small: String, val medium: String, val large: String)
 
