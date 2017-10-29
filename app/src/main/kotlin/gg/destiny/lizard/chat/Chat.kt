@@ -11,8 +11,8 @@ import okio.ByteString
 
 class Chat(
     private val endpoint: String = DGG_ENDPOINT,
-    private val okHttpClient: OkHttpClient = App.OKHTTP,
-    private val moshi: Moshi = App.MOSHI) : WebSocketListener() {
+    private val okHttpClient: OkHttpClient = App.okHttp,
+    private val moshi: Moshi = App.moshi) : WebSocketListener() {
   companion object {
     private const val DGG_ENDPOINT = "wss://www.destiny.gg/ws"
     private const val UNKNOWN_TYPE = "UNK"

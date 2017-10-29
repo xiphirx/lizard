@@ -1,13 +1,9 @@
 package gg.destiny.lizard
 
 import android.app.Application
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
 import android.os.StrictMode
-import android.support.v4.content.ContextCompat
 import com.facebook.stetho.Stetho
 import com.github.ajalt.timberkt.d
 import com.squareup.moshi.KotlinJsonAdapterFactory
@@ -20,9 +16,9 @@ import timber.log.Timber
 class App : Application() {
   companion object {
     lateinit var INSTANCE: App
-    val OKHTTP = OkHttpClient()
-    val MOSHI = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-    val TWITCH_TV = TwitchTvApi(OKHTTP, MOSHI)
+    val okHttp by lazy { OkHttpClient() }
+    val moshi by lazy { Moshi.Builder().add(KotlinJsonAdapterFactory()).build() }
+    val twitchTv by lazy { TwitchTvApi(okHttp, moshi) }
   }
 
   override fun onCreate() {

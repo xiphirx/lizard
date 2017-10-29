@@ -9,7 +9,7 @@ data class LoginModel(
 
 sealed class PartialState {
   object Welcome : PartialState()
-  data class Request(val authorizeUrl: String, val redirectSlug: String) : PartialState()
+  data class Request(val authorizeUrl: String, val redirectKey: String) : PartialState()
   object Loading : PartialState()
   data class Error(val error: LoginError) : PartialState()
 }

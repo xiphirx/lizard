@@ -18,22 +18,28 @@ class OAuthLoginDialog(
 ) : Dialog(context) {
   private val overrideWebViewClient = object : WebViewClient() {
     override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
-      super.onPageStarted(view, url, favicon)
+      if (handleRedirect(url)) {
+        view.stopLoading()
+        return
+      }
       d { "Loading $url" }
-      checkForRedirect(url)
+      super.onPageStarted(view, url, favicon)
     }
 
     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
       val url = request.url.toString()
-      checkForRedirect(url)
-      view.loadUrl(url)
-      return true
-    }
-
-    private fun checkForRedirect(url: String) {
       if (url.startsWith(redirectSlug)) {
         redirectListener(url)
       }
+      return false
+    }
+
+    private fun handleRedirect(url: String): Boolean {
+      if (url.startsWith(redirectSlug)) {
+        redirectListener(url)
+        return true
+      }
+      return false
     }
   }
 

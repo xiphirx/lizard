@@ -10,7 +10,7 @@ import io.reactivex.schedulers.Schedulers
 
 class StreamPresenter(
     private val streamKey: String = "destiny",
-    private val twitchTvApi: TwitchTvApi = App.TWITCH_TV,
+    private val twitchTvApi: TwitchTvApi = App.twitchTv,
     private val chat: Chat = Chat()
 ) : BasePresenter<StreamView, StreamModel>() {
   override fun bindIntents(scheduler: Scheduler): Observable<StreamModel> =
