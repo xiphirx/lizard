@@ -3,6 +3,7 @@ package gg.destiny.lizard.stream
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebResourceRequest
@@ -36,18 +37,26 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
     }
 
   private val chatAdapter = createChatAdapter()
+  private var touchingChat = false
   private var autoScroll = true
-  private val scrollListener = object : RecyclerView.OnScrollListener() {
+  private val chatScrollListener = object : RecyclerView.OnScrollListener() {
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
       super.onScrollStateChanged(recyclerView, newState)
-      autoScroll = when (newState) {
-        RecyclerView.SCROLL_STATE_IDLE -> {
-          val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
-          layoutManager.findLastCompletelyVisibleItemPosition() == chatAdapter.itemCount - 1
-        }
-        else -> false
-      }
+
+      if (touchingChat || autoScroll) return
+
+      val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
+      autoScroll = layoutManager.findLastVisibleItemPosition() == chatAdapter.itemCount - 1
     }
+  }
+
+  private val chatTouchListener = View.OnTouchListener { _, ev ->
+    val action = ev.actionMasked
+    touchingChat = action != MotionEvent.ACTION_UP && action != MotionEvent.ACTION_CANCEL
+    if (touchingChat) {
+      autoScroll = false
+    }
+    false
   }
 
   override fun createPresenter() = StreamPresenter()
@@ -57,7 +66,8 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
       with(stream_chat_recycler_view) {
         adapter = chatAdapter
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        addOnScrollListener(scrollListener)
+        addOnScrollListener(chatScrollListener)
+        setOnTouchListener(chatTouchListener)
       }
 
       with(stream_web_view.settings) {
