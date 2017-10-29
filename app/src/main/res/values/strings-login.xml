@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="login.error.title">Unable to login</string>
+  <string name="login.error.no_internet">You must have an active Internet connection to login</string>
+  <string name="login.error.http_error">The server was unable to handle your login request: %1$d</string>
+  <string name="login.error.auth">Client made a bad request: %1$s</string>
+  <string name="login.error.unknown">Something went wrong when trying to login. Please try again later.</string>
+  <string name="login.nag.title">It looks like you\'re not logged in…</string>
+  <string name="login.nag.login_with">Login with…</string>
+  <string name="login.nag.please_wait">Please wait</string>
+</resources>

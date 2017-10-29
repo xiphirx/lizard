@@ -15,12 +15,6 @@
         android:id="@+id/stream_web_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:visibility="gone"
-        android:background="@drawable/bg_gradient_black_transparent_down"/>
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -64,13 +58,14 @@
   </gg.destiny.lizard.base.widget.AspectRatioFrameLayout>
   <TextView
       android:id="@+id/stream_chat_offline_message"
-      style="@style/TextAppearance.AppCompat.Title"
+      style="@style/TextAppearance.AppCompat.Subhead"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_gravity="center"
       android:padding="8dp"
       android:visibility="gone"
-      tools:text="Destiny is offline"/>
+      android:text="@string/stream.offline_message"
+      tools:visibility="visible"/>
   <android.support.v7.widget.RecyclerView
       android:id="@+id/stream_chat_recycler_view"
       android:layout_width="match_parent"

@@ -1,4 +1,4 @@
-package gg.destiny.lizard.login
+package gg.destiny.lizard.base.widget
 
 import android.animation.TimeAnimator
 import android.content.Context

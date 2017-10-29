@@ -1,11 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <color name="white">#ffffff</color>
+  <color name="white90">#e6ffffff</color>
+  <color name="white80">#ccffffff</color>
+  <color name="white70">#b3ffffff</color>
+  <color name="white60">#99ffffff</color>
+  <color name="white50">#80ffffff</color>
+  <color name="white40">#66ffffff</color>
+  <color name="white30">#4dffffff</color>
+  <color name="white20">#33ffffff</color>
+  <color name="white10">#1affffff</color>
+  <color name="gray">#666</color>
   <color name="red">#ff0000</color>
+  <color name="black">#ff000000</color>
   <color name="black87">#de000000</color>
   <!-- Twitch TV -->
   <color name="twitchtv.primary">#ff6441a4</color>
   <color name="twitchtv.secondary">@color/white</color>
+  <!-- reddit -->
+  <color name="reddit.primary">@color/white</color>
+  <color name="reddit.secondary">#ff4500</color>
+  <!-- Google -->
+  <color name="google.primary">@color/white</color>
+  <color name="google.secondary">#ff4285f4</color>
+  <!-- Twitter -->
+  <color name="twitter.primary">#ff1da1f2</color>
+  <color name="twitter.secondary">@color/white</color>
   <!-- Default theme -->
   <color name="theme.default.colorPrimary">#528cc7</color>
   <color name="theme.default.colorPrimaryDark">#2f3849</color>

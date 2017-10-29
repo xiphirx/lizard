@@ -1,4 +1,4 @@
-package gg.destiny.lizard.login
+package gg.destiny.lizard.drawer
 
 import android.app.Dialog
 import android.content.Context

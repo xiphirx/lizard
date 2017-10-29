@@ -1,4 +1,4 @@
-package gg.destiny.lizard.login
+package gg.destiny.lizard.drawer
 
 import gg.destiny.lizard.App
 import gg.destiny.lizard.api.DestinyApi
@@ -8,24 +8,24 @@ import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.schedulers.Schedulers
 
-class LoginPresenter(
+class DrawerPresenter(
     private val destinyApi: DestinyApi = DestinyApi(App.okHttp, SharedPreferencesCookieJar())
-) : BasePresenter<LoginView, LoginModel>() {
-  override fun bindIntents(scheduler: Scheduler): Observable<LoginModel> {
-    val firstLoad = intent { it.firstLoad() }.flatMap { Observable.just(PartialState.Welcome) }
+) : BasePresenter<DrawerView, DrawerModel>() {
+  override fun bindIntents(scheduler: Scheduler): Observable<DrawerModel> {
+    val firstLoad = intent { it.firstLoad() }.flatMap { Observable.just(LoginStatus.LoggedOut) }
     val requestTwitchLogin = intent { it.twitchLoginClicks }
         .flatMap {
           destinyApi.initiateLogin(DestinyApi.LoginService.TWITCH)
               .map {
                 val url = it.raw().request().url()
                 when (url.host()) {
-                  DestinyApi.HOST -> PartialState.Welcome
+                  DestinyApi.HOST -> LoginStatus.LoggedOut
                   else ->
-                    PartialState.Request(
+                    LoginStatus.Request(
                         url.toString(), DestinyApi.oauthRedirectUri(DestinyApi.LoginService.TWITCH))
                 }
               }
-              .startWith(PartialState.Loading)
+              .startWith(LoginStatus.Loading)
               .subscribeOn(Schedulers.io())
         }
 
@@ -35,26 +35,19 @@ class LoginPresenter(
               // TODO: Figure out errors that are sent back
               .map {
                 if (it.isSuccessful) {
-                  PartialState.Welcome
+                  LoginStatus.LoggedOut
                 } else {
-                  PartialState.Error(LoginError.Http(it.code()))
+                  LoginStatus.Error(LoginError.Http(it.code()))
                 }
               }
-              .startWith(PartialState.Loading)
+              .startWith(LoginStatus.Loading)
               .subscribeOn(Schedulers.io())
         }
 
     return Observable.merge(firstLoad, requestTwitchLogin, oauthRedirect)
         .observeOn(scheduler)
-        .scan(LoginModel(), { _, state -> reduce(state) })
+        .scan(DrawerModel(), { _, state -> reduce(state) })
   }
 
-  private fun reduce(state: PartialState) =
-    when (state) {
-      is PartialState.Welcome -> LoginModel()
-      is PartialState.Request -> LoginModel(
-          loginAuthorizeUrl = state.authorizeUrl, loginRedirectSlug = state.redirectKey)
-      is PartialState.Loading -> LoginModel(isLoading = true)
-      is PartialState.Error -> LoginModel(error = state.error)
-    }
+  private fun reduce(state: LoginStatus) = DrawerModel(state)
 }

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-  <string name="login_controller.error.title">Unable to login</string>
-  <string name="login_controller.error.no_internet">You must have an active Internet connection to login</string>
-  <string name="login_controller.error.http_error">The server was unable to handle your login request: %1$d</string>
-  <string name="login_controller.error.auth">Client made a bad request: %1$s</string>
-  <string name="login_controller.error.unknown">Something went wrong when trying to login. Please try again later.</string>
-</resources>

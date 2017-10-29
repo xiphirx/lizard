@@ -20,9 +20,9 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.controller_stream.view.stream_chat_count
 import kotlinx.android.synthetic.main.controller_stream.view.stream_chat_offline_message
 import kotlinx.android.synthetic.main.controller_stream.view.stream_chat_recycler_view
+import kotlinx.android.synthetic.main.controller_stream.view.stream_video_container
 import kotlinx.android.synthetic.main.controller_stream.view.stream_viewer_num
 import kotlinx.android.synthetic.main.controller_stream.view.stream_web_view
-import kotlinx.android.synthetic.main.controller_stream.view.toolbar
 
 interface StreamView : BaseView<StreamModel>
 
@@ -45,7 +45,6 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
       }
 
-      toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp)
       with(stream_web_view.settings) {
         javaScriptEnabled = true
         mediaPlaybackRequiresUserGesture = false
@@ -67,13 +66,13 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
       when (model) {
         is StreamModel.Online -> {
           it.stream_chat_offline_message.visibility = View.GONE
-          it.stream_web_view?.visibility = View.VISIBLE
-          it.toolbar?.title = model.title
-          it.stream_viewer_num?.text = "${model.viewerCount}"
+          it.stream_video_container.visibility = View.VISIBLE
+          it.stream_viewer_num.text = "${model.viewerCount}"
           registerChatObservable(model.chatMessages)
           setupStream(model.url)
         }
         is StreamModel.Offline -> {
+          it.stream_video_container.visibility = View.GONE
           it.stream_chat_offline_message.visibility = View.VISIBLE
           registerChatObservable(model.chatMessages)
           setupStream(null)
