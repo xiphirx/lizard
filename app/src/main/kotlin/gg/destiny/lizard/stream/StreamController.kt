@@ -1,6 +1,7 @@
 package gg.destiny.lizard.stream
 
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +36,19 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
     }
 
   private val chatAdapter = createChatAdapter()
+  private var autoScroll = true
+  private val scrollListener = object : RecyclerView.OnScrollListener() {
+    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+      super.onScrollStateChanged(recyclerView, newState)
+      autoScroll = when (newState) {
+        RecyclerView.SCROLL_STATE_IDLE -> {
+          val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
+          layoutManager.findLastCompletelyVisibleItemPosition() == chatAdapter.itemCount - 1
+        }
+        else -> false
+      }
+    }
+  }
 
   override fun createPresenter() = StreamPresenter()
 
@@ -43,6 +57,7 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
       with(stream_chat_recycler_view) {
         adapter = chatAdapter
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        addOnScrollListener(scrollListener)
       }
 
       with(stream_web_view.settings) {
@@ -52,6 +67,7 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
         allowContentAccess = true
         allowFileAccess = true
       }
+
       stream_web_view.webViewClient = object : WebViewClient() {
         override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
           view.loadUrl(request.url.toString())
@@ -110,7 +126,9 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
       }
       is ChatMessage.Message -> {
         chatAdapter.items.add(message)
-        view?.stream_chat_recycler_view?.smoothScrollToPosition(chatAdapter.items.lastIndex)
+        if (autoScroll) {
+          view?.stream_chat_recycler_view?.smoothScrollToPosition(chatAdapter.items.lastIndex)
+        }
       }
       is ChatMessage.Join -> updateChatUserCount(++chatUserCount)
       is ChatMessage.Quit -> updateChatUserCount(--chatUserCount)
