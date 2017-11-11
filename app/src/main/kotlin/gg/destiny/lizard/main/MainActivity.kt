@@ -12,8 +12,8 @@ import kotlinx.android.synthetic.main.activity_main.drawer_content_frame
 import kotlinx.android.synthetic.main.activity_main.stream_content_frame
 
 class MainActivity : BaseActivity() {
-  lateinit var streamRouter: Router
-  lateinit var drawerRouter: Router
+  private lateinit var streamRouter: Router
+  private lateinit var drawerRouter: Router
 
   override fun onCreate(savedInstance: Bundle?) {
     super.onCreate(savedInstance)
