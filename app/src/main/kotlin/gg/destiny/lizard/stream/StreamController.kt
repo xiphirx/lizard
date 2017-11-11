@@ -3,7 +3,6 @@ package gg.destiny.lizard.stream
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebResourceRequest
@@ -37,23 +36,16 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
     }
 
   private val chatAdapter = createChatAdapter()
-  private var autoScroll = true
-  private val chatScrollListener = object : RecyclerView.OnScrollListener() {
-    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-      super.onScrolled(recyclerView, dx, dy)
-      val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
-      autoScroll = layoutManager.findLastVisibleItemPosition() == chatAdapter.itemCount - 1
-    }
-  }
+  private lateinit var chatRecyclerView: RecyclerView
 
   override fun createPresenter() = StreamPresenter()
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
     return inflater.inflate(R.layout.controller_stream, container, false).apply {
-      with(stream_chat_recycler_view) {
+      chatRecyclerView = stream_chat_recycler_view
+      with(chatRecyclerView) {
         adapter = chatAdapter
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        addOnScrollListener(chatScrollListener)
       }
 
       with(stream_web_view.settings) {
@@ -121,9 +113,10 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
         updateChatUserCount(chatUserCount)
       }
       is ChatMessage.Message -> {
+        val autoScroll = !chatRecyclerView.canScrollVertically(1)
         chatAdapter.items.add(message)
         if (autoScroll) {
-          layout.stream_chat_recycler_view.smoothScrollToPosition(chatAdapter.items.lastIndex)
+          chatRecyclerView.scrollToPosition(chatAdapter.items.lastIndex)
         }
       }
       is ChatMessage.Join -> updateChatUserCount(++chatUserCount)
