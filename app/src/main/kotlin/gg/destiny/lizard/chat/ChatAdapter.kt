@@ -20,11 +20,7 @@ fun createChatAdapter() =
     }
 
 private fun ChatMessage.Message.bind(message: TextView) {
-  val spanner = Spanner().pushSpan(ForegroundColorSpan(0xFF666666.toInt()))
-      .pushSpan(AbsoluteSizeSpan(12, true))
-      .append("$formattedTime ")
-      .popSpan()
-      .popSpan()
+  val spanner = Spanner()
       .pushSpan(ForegroundColorSpan(colorForFeatures(features)))
       .append(nick)
       .popSpan()
