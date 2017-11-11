@@ -46,8 +46,6 @@ class EmoteSpan(private val drawable: Drawable) : DynamicDrawableSpan() {
     canvas.scope {
       val lineHeight = bottom - top
       val newY = top + (lineHeight / 2f - drawable.intrinsicHeight / 2f)
-
-
       val clipBounds = canvas.clipBounds
       bounds.set(drawable.bounds)
       bounds.offset(x.toInt(), newY.toInt())
