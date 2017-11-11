@@ -137,7 +137,7 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
       is ChatMessage.Message -> {
         chatAdapter.items.add(message)
         if (autoScroll) {
-          view?.stream_chat_recycler_view?.smoothScrollToPosition(chatAdapter.items.lastIndex)
+          layout.stream_chat_recycler_view.smoothScrollToPosition(chatAdapter.items.lastIndex)
         }
       }
       is ChatMessage.Join -> updateChatUserCount(++chatUserCount)
