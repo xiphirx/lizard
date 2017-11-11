@@ -1,4 +1,4 @@
-package gg.destiny.lizard.text
+package gg.destiny.lizard.base.text
 
 import android.text.SpannableString
 import android.text.SpannableStringBuilder

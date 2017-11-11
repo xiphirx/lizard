@@ -2,14 +2,13 @@ package gg.destiny.lizard.chat
 
 import android.graphics.Color
 import android.support.v4.text.util.LinkifyCompat
-import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.text.util.Linkify
 import android.widget.TextView
 import com.github.ajalt.flexadapter.FlexAdapter
 import com.github.ajalt.flexadapter.register
 import gg.destiny.lizard.R
-import gg.destiny.lizard.text.Spanner
+import gg.destiny.lizard.base.text.Spanner
 import kotlinx.android.synthetic.main.item_chat_message.view.chat_message_message
 
 fun createChatAdapter() =
