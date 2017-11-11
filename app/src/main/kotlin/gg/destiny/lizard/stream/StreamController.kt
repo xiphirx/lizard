@@ -37,26 +37,13 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
     }
 
   private val chatAdapter = createChatAdapter()
-  private var touchingChat = false
   private var autoScroll = true
   private val chatScrollListener = object : RecyclerView.OnScrollListener() {
-    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-      super.onScrollStateChanged(recyclerView, newState)
-
-      if (touchingChat || autoScroll) return
-
+    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+      super.onScrolled(recyclerView, dx, dy)
       val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
       autoScroll = layoutManager.findLastVisibleItemPosition() == chatAdapter.itemCount - 1
     }
-  }
-
-  private val chatTouchListener = View.OnTouchListener { _, ev ->
-    val action = ev.actionMasked
-    touchingChat = action != MotionEvent.ACTION_UP && action != MotionEvent.ACTION_CANCEL
-    if (touchingChat) {
-      autoScroll = false
-    }
-    false
   }
 
   override fun createPresenter() = StreamPresenter()
@@ -67,7 +54,6 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
         adapter = chatAdapter
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         addOnScrollListener(chatScrollListener)
-        setOnTouchListener(chatTouchListener)
       }
 
       with(stream_web_view.settings) {
