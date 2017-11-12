@@ -1,5 +1,8 @@
 package gg.destiny.lizard.account
 
+import com.github.ajalt.timberkt.d
+import com.squareup.moshi.FromJson
+import com.squareup.moshi.ToJson
 import gg.destiny.lizard.api.SessionInformation
 
 enum class AccountSubscriptionTier {
@@ -13,6 +16,19 @@ enum class AccountSubscriptionTier {
     fun of(value: String?): AccountSubscriptionTier {
       // TODO: Figure out the appropriate values here
       return NONE
+    }
+  }
+
+  class TypeAdapter {
+    @FromJson
+    fun fromJson(json: String): AccountSubscriptionTier {
+      d { "received $json" }
+      return valueOf(json)
+    }
+
+    @ToJson
+    fun toJson(tier: AccountSubscriptionTier): String {
+      return tier.name
     }
   }
 }

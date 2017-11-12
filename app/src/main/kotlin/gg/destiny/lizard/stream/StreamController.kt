@@ -1,5 +1,6 @@
 package gg.destiny.lizard.stream
 
+import android.support.annotation.StringRes
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -19,8 +20,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.controller_stream.view.stream_chat_count
+import kotlinx.android.synthetic.main.controller_stream.view.stream_chat_edit_text
 import kotlinx.android.synthetic.main.controller_stream.view.stream_chat_offline_message
 import kotlinx.android.synthetic.main.controller_stream.view.stream_chat_recycler_view
+import kotlinx.android.synthetic.main.controller_stream.view.stream_chat_text_input_layout
 import kotlinx.android.synthetic.main.controller_stream.view.stream_video_container
 import kotlinx.android.synthetic.main.controller_stream.view.stream_viewer_num
 import kotlinx.android.synthetic.main.controller_stream.view.stream_web_view
@@ -66,25 +69,43 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
   }
 
   override fun render(model: StreamModel) {
-    view?.let {
-      when (model) {
-        is StreamModel.Online -> {
-          it.stream_chat_offline_message.visibility = View.GONE
-          it.stream_video_container.visibility = View.VISIBLE
-          it.stream_viewer_num.text = "${model.viewerCount}"
-          registerChatObservable(model.chatMessages)
-          setupStream(model.url)
-        }
-        is StreamModel.Offline -> {
-          it.stream_video_container.visibility = View.GONE
-          it.stream_chat_offline_message.visibility = View.VISIBLE
-          registerChatObservable(model.chatMessages)
-          setupStream(null)
-        }
-        is StreamModel.Loading -> {
-          setupStream(null)
-        }
+    when (model.streamStatus) {
+      is StreamStatus.Online -> {
+        layout.stream_chat_offline_message.visibility = View.GONE
+        layout.stream_video_container.visibility = View.VISIBLE
+        layout.stream_viewer_num.text = "${model.streamStatus.viewerCount}"
+        registerChatObservable(model.streamStatus.chatMessages)
+        setupStream(model.streamStatus.url)
       }
+      is StreamStatus.Offline -> {
+        layout.stream_video_container.visibility = View.GONE
+        layout.stream_chat_offline_message.visibility = View.VISIBLE
+        registerChatObservable(model.streamStatus.chatMessages)
+        setupStream(null)
+      }
+      is StreamStatus.Loading -> {
+        setupStream(null)
+      }
+    }
+
+    when (model.chatParticipationStatus) {
+      is ChatParticipationStatus.Offline ->
+          layout.stream_chat_text_input_layout.visibility = View.GONE
+      is ChatParticipationStatus.Online ->
+          setChatCapabilities(editable = true, hint = R.string.chat_text_hint)
+      is ChatParticipationStatus.Banned ->
+          setChatCapabilities(editable = false, hint = R.string.chat_text_hint_banned)
+    }
+  }
+
+  private fun setChatCapabilities(editable: Boolean, @StringRes hint: Int) {
+    with(layout.stream_chat_text_input_layout) {
+      visibility = android.view.View.VISIBLE
+      isEnabled = editable
+    }
+    with(layout.stream_chat_edit_text) {
+      isEnabled = editable
+      setHint(hint)
     }
   }
 

@@ -71,4 +71,19 @@
       android:layout_width="match_parent"
       android:layout_height="0dp"
       android:layout_weight="1"/>
+  <android.support.design.widget.TextInputLayout
+      android:id="@+id/stream_chat_text_input_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:visibility="gone"
+      app:hintEnabled="false">
+    <android.support.design.widget.TextInputEditText
+        android:id="@+id/stream_chat_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/chat.text_hint"
+        android:imeOptions="actionDone"
+        android:maxLines="1"
+        android:inputType="textAutoCorrect"/>
+  </android.support.design.widget.TextInputLayout>
 </LinearLayout>

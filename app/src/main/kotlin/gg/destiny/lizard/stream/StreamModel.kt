@@ -1,20 +1,27 @@
 package gg.destiny.lizard.stream
 
+import gg.destiny.lizard.account.AccountInfo
 import gg.destiny.lizard.chat.ChatMessage
 import io.reactivex.Observable
 
-sealed class StreamModel {
+data class StreamModel(
+    val streamStatus: StreamStatus = StreamStatus.Loading,
+    val chatParticipationStatus: ChatParticipationStatus = ChatParticipationStatus.Offline
+)
+
+sealed class StreamStatus {
   data class Online(
       val title: String,
       val viewerCount: Int,
       val chatMessages: Observable<ChatMessage>,
       val url: String
-  ) : StreamModel()
-
-  data class Offline(
-      val chatMessages: Observable<ChatMessage>
-  ) : StreamModel()
-
-  object Loading : StreamModel()
+  ) : StreamStatus()
+  data class Offline(val chatMessages: Observable<ChatMessage>) : StreamStatus()
+  object Loading : StreamStatus()
 }
 
+sealed class ChatParticipationStatus {
+  data class Online(val accountInfo: AccountInfo) : ChatParticipationStatus()
+  object Offline : ChatParticipationStatus()
+  object Banned : ChatParticipationStatus()
+}

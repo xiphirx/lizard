@@ -44,7 +44,7 @@ data class SerializableCookie(
       .build()
 }
 
-class AccountStorage(
+class AccountCookieJar(
     moshi: Moshi = App.moshi,
     private val preferences: SharedPreferences =
       App.INSTANCE.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE),
@@ -94,11 +94,7 @@ class AccountStorage(
     val newCookieList = mutableListOf<Cookie>()
     val key = prefKey(host)
     preferences.getStringSet(key, emptySet()).forEach {
-      val serializableCookie = typeAdapter.fromJson(it)
-      if (serializableCookie == null) {
-        return@forEach
-      }
-
+      val serializableCookie = typeAdapter.fromJson(it) ?: return@forEach
       newCookieList.add(serializableCookie.toCookie())
     }
     cookieJar[key] = newCookieList

@@ -6,7 +6,8 @@ import com.facebook.stetho.Stetho
 import com.github.ajalt.timberkt.d
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
-import gg.destiny.lizard.account.AccountStorage
+import gg.destiny.lizard.account.AccountCookieJar
+import gg.destiny.lizard.account.AccountInfoStorage
 import gg.destiny.lizard.api.TwitchTvApi
 import net.danlew.android.joda.JodaTimeAndroid
 import okhttp3.OkHttpClient
@@ -16,7 +17,8 @@ class App : Application() {
   companion object {
     lateinit var INSTANCE: App
     val okHttp by lazy { OkHttpClient() }
-    val accountStorage by lazy { AccountStorage() }
+    val accountInfoStorage by lazy { AccountInfoStorage() }
+    val accountCookieJar by lazy { AccountCookieJar() }
     val twitchTv by lazy { TwitchTvApi(okHttp, moshi) }
     val moshi: Moshi by lazy { Moshi.Builder().add(KotlinJsonAdapterFactory()).build() }
   }

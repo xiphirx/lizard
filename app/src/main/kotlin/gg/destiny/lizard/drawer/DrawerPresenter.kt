@@ -1,6 +1,7 @@
 package gg.destiny.lizard.drawer
 
 import gg.destiny.lizard.account.AccountInfo
+import gg.destiny.lizard.account.AccountManager
 import gg.destiny.lizard.api.DestinyApi
 import gg.destiny.lizard.base.mvi.BasePresenter
 import io.reactivex.Observable
@@ -8,18 +9,21 @@ import io.reactivex.Scheduler
 import io.reactivex.schedulers.Schedulers
 
 class DrawerPresenter(
-    private val destinyApi: DestinyApi = DestinyApi()
+    private val accountManager: AccountManager = AccountManager()
 ) : BasePresenter<DrawerView, DrawerModel>() {
   override fun bindIntents(scheduler: Scheduler): Observable<DrawerModel> {
     val accountStatus = intent { it.firstLoad() }
         .flatMap {
-          destinyApi.getSessionInformation()
+          accountManager.queryAccountInfo()
               .map {
                 if (it.isSuccessful) {
                   it.body()?.let {
-                    LoginStatus.LoggedIn(AccountInfo.of(it))
+                    val accountInfo = AccountInfo.of(it)
+                    accountManager.storeAccountInfo(accountInfo)
+                    LoginStatus.LoggedIn(accountInfo)
                   } ?: LoginStatus.LoggedOut
                 } else {
+                  accountManager.clearAccountInfo()
                   LoginStatus.LoggedOut
                 }
               }
@@ -29,7 +33,7 @@ class DrawerPresenter(
 
     val requestTwitchLogin = intent { it.twitchLoginClicks }
         .flatMap {
-          destinyApi.initiateLogin(DestinyApi.LoginService.TWITCH)
+          accountManager.initiateOAuthLogin(DestinyApi.LoginService.TWITCH)
               .map {
                 val url = it.raw().request().url()
                 when (url.host()) {
@@ -45,7 +49,7 @@ class DrawerPresenter(
 
     val oauthRedirect = intent { it.oauthRedirectUrl }
         .flatMap {
-          destinyApi.completeLogin(it)
+          accountManager.completeOAuthLogin(it)
               // TODO: Figure out errors that are sent back
               .map {
                 if (it.isSuccessful) {

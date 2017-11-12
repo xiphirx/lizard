@@ -21,7 +21,7 @@ import retrofit2.http.Url
 
 class DestinyApi(
     okHttpClient: OkHttpClient = App.okHttp,
-    cookieJar: CookieJar = App.accountStorage,
+    cookieJar: CookieJar = App.accountCookieJar,
     moshi: Moshi = App.moshi
 ) {
   companion object {
