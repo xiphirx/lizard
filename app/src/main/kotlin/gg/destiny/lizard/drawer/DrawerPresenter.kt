@@ -1,10 +1,6 @@
 package gg.destiny.lizard.drawer
 
-import com.github.ajalt.timberkt.Timber.d
-import gg.destiny.lizard.App
 import gg.destiny.lizard.account.AccountInfo
-import gg.destiny.lizard.account.AccountManager
-import gg.destiny.lizard.account.SubscriptionTier
 import gg.destiny.lizard.api.DestinyApi
 import gg.destiny.lizard.base.mvi.BasePresenter
 import io.reactivex.Observable
@@ -12,21 +8,13 @@ import io.reactivex.Scheduler
 import io.reactivex.schedulers.Schedulers
 
 class DrawerPresenter(
-    private val accountManager: AccountManager = App.accountManager,
     private val destinyApi: DestinyApi = DestinyApi()
 ) : BasePresenter<DrawerView, DrawerModel>() {
   override fun bindIntents(scheduler: Scheduler): Observable<DrawerModel> {
     val accountStatus = intent { it.firstLoad() }
         .flatMap {
-          accountManager.isLoggedIn()
-              .map {
-                d { "yo wtf $it" }
-                if (it) {
-                  LoginStatus.LoggedIn(AccountInfo("Xiphirx", SubscriptionTier.FOUR))
-                } else {
-                  LoginStatus.LoggedOut
-                }
-              }
+          destinyApi.getSessionInformation()
+              .map { LoginStatus.LoggedIn(AccountInfo.of(it)) }
         }
 
     val requestTwitchLogin = intent { it.twitchLoginClicks }

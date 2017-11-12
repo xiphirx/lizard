@@ -8,6 +8,7 @@ import android.widget.TextView
 import com.github.ajalt.flexadapter.FlexAdapter
 import com.github.ajalt.flexadapter.register
 import gg.destiny.lizard.R
+import gg.destiny.lizard.account.AccountFeature
 import gg.destiny.lizard.base.text.Spanner
 import kotlinx.android.synthetic.main.item_chat_message.view.chat_message_message
 
@@ -43,6 +44,6 @@ private fun ChatMessage.Message.bind(message: TextView) {
 }
 
 private fun colorForFeatures(features: List<String>) =
-    features.mapNotNull { featureOf(it) }
+    features.mapNotNull { AccountFeature.of(it) }
         .sortedByDescending { it.priority }
         .firstOrNull()?.color ?: Color.WHITE

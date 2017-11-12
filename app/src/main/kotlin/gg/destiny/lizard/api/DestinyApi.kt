@@ -1,5 +1,7 @@
 package gg.destiny.lizard.api
 
+import com.squareup.moshi.Json
+import com.squareup.moshi.Moshi
 import gg.destiny.lizard.App
 import gg.destiny.lizard.BuildConfig
 import io.reactivex.Observable
@@ -9,6 +11,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -17,7 +20,10 @@ import retrofit2.http.POST
 import retrofit2.http.Url
 
 class DestinyApi(
-    okHttpClient: OkHttpClient = App.okHttp, cookieJar: CookieJar = App.accountStorage) {
+    okHttpClient: OkHttpClient = App.okHttp,
+    cookieJar: CookieJar = App.accountStorage,
+    moshi: Moshi = App.moshi
+) {
   companion object {
     const val HOST = "www.destiny.gg"
     const val BASE_URL = "https://$HOST"
@@ -37,11 +43,16 @@ class DestinyApi(
     @POST("login")
     fun login(
         @Field("authProvider") service: String,
-        @Field("rememberme") rememberMe: Boolean = true): Observable<Response<String>>
+        @Field("rememberme") rememberMe: Boolean = true
+    ): Observable<Response<String>>
 
     /** Authenticates the user and eventually sets authorization cookies */
     @GET
     fun auth(@Url path: String): Observable<Response<String>>
+
+    /** Retrieves information about the current session, if any */
+    @GET("api/chat/me")
+    fun sessionInformation(): Observable<SessionInformation>
   }
 
   private val endpoints: Endpoints
@@ -63,6 +74,7 @@ class DestinyApi(
         .client(okHttp)
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .addConverterFactory(ScalarsConverterFactory.create())
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
 
     endpoints = retrofit.create(Endpoints::class.java)
@@ -73,4 +85,18 @@ class DestinyApi(
   // This is dumb, but instead of rewriting a Rx Observable for an OkHttp call, we re-create
   // the query which is far simpler
   fun completeLogin(redirectUrl: String) = endpoints.auth(redirectUrl.substringAfter(REDIRECT_BASE_URL))
+
+  fun getSessionInformation() = endpoints.sessionInformation()
 }
+
+data class SessionInformation(
+    @Json(name = "email") val email: String,
+    @Json(name = "nick") val nick: String,
+    @Json(name = "username") val username: String,
+    @Json(name = "userId") val userId: String,
+    @Json(name = "userStatus") val userStatus: String,
+    @Json(name = "roles") val roles: List<String>,
+    @Json(name = "features") val features: List<String>,
+    @Json(name = "subscription") val subscription: String,
+    @Json(name = "settings") val settings: List<String>
+)

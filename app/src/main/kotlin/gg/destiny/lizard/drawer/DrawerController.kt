@@ -14,7 +14,6 @@ import com.jakewharton.rxrelay2.PublishRelay
 import com.jakewharton.rxrelay2.Relay
 import gg.destiny.lizard.R
 import gg.destiny.lizard.account.AccountInfo
-import gg.destiny.lizard.account.SubscriptionTier
 import gg.destiny.lizard.base.controller.BaseController
 import gg.destiny.lizard.base.mvi.BaseView
 import io.reactivex.Observable
@@ -47,13 +46,12 @@ class DrawerController : BaseController<DrawerView, DrawerModel, DrawerPresenter
   private var clicksDisposable: CompositeDisposable? = null
   private val redirectListener = { url: String -> oauthRedirectUrl.accept(url) }
   private var loginDialog: Dialog? = null
-  private val accountInfo = AccountInfo("", SubscriptionTier.THREE)
   private val loginNag = LoginNag()
 
   private val drawerAdapter = FlexAdapter<Any>().apply {
     register<AccountInfo>(R.layout.item_account_info) { info, view, _ ->
       with(view) {
-        account_info_name.text = info.name
+        account_info_name.text = info.nick
         account_info_subscription_tier.text = info.subscriptionTier.name
       }
     }
@@ -84,7 +82,7 @@ class DrawerController : BaseController<DrawerView, DrawerModel, DrawerPresenter
         requestLogin(model.loginStatus.authorizeUrl, model.loginStatus.redirectSlug)
       is LoginStatus.Loading -> showLoginLoading()
       is LoginStatus.Error -> showLoginError(model.loginStatus.error)
-      is LoginStatus.LoggedIn -> showAccountInfo()
+      is LoginStatus.LoggedIn -> showAccountInfo(model.loginStatus.accountInfo)
     }
   }
 
@@ -99,7 +97,7 @@ class DrawerController : BaseController<DrawerView, DrawerModel, DrawerPresenter
     }
   }
 
-  private fun showAccountInfo() {
+  private fun showAccountInfo(accountInfo: AccountInfo) {
     if (drawerAdapter.items.firstOrNull() !is AccountInfo) {
       drawerAdapter.items.setFirst(accountInfo)
     }
