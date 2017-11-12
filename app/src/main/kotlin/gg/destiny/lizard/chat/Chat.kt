@@ -37,11 +37,6 @@ class Chat(
 
   fun messages(): Observable<ChatMessage> = relay
 
-  override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-    super.onMessage(webSocket, bytes)
-    d { "bytes $bytes"}
-  }
-
   override fun onMessage(webSocket: WebSocket, message: String) {
     super.onMessage(webSocket, message)
     d { message }
