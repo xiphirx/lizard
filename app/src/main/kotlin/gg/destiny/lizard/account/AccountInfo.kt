@@ -10,7 +10,7 @@ enum class AccountSubscriptionTier {
   FOUR;
 
   companion object {
-    fun of(value: String): AccountSubscriptionTier {
+    fun of(value: String?): AccountSubscriptionTier {
       // TODO: Figure out the appropriate values here
       return NONE
     }
@@ -71,7 +71,7 @@ data class AccountInfo(
     val subscriptionTier: AccountSubscriptionTier
 ) {
   companion object {
-    fun of(session: SessionInformation): AccountInfo {
+    fun of(session: SessionInformation.Available): AccountInfo {
       return AccountInfo(
           username = session.username,
           nick = session.nick,

@@ -1,8 +1,6 @@
 package gg.destiny.lizard
 
 import android.app.Application
-import android.os.Handler
-import android.os.Looper
 import android.os.StrictMode
 import com.facebook.stetho.Stetho
 import com.github.ajalt.timberkt.d
@@ -33,9 +31,7 @@ class App : Application() {
 
     Thread.setDefaultUncaughtExceptionHandler { _, e ->
       d(e) { "Uncaught" }
-      Handler(Looper.getMainLooper()).post {
-        throw RuntimeException(e)
-      }
+      throw RuntimeException(e)
     }
 
     JodaTimeAndroid.init(this)

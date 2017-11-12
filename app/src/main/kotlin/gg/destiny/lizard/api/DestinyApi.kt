@@ -52,7 +52,7 @@ class DestinyApi(
 
     /** Retrieves information about the current session, if any */
     @GET("api/chat/me")
-    fun sessionInformation(): Observable<SessionInformation>
+    fun sessionInformation(): Observable<Response<SessionInformation.Available>>
   }
 
   private val endpoints: Endpoints
@@ -89,14 +89,18 @@ class DestinyApi(
   fun getSessionInformation() = endpoints.sessionInformation()
 }
 
-data class SessionInformation(
-    @Json(name = "email") val email: String,
-    @Json(name = "nick") val nick: String,
-    @Json(name = "username") val username: String,
-    @Json(name = "userId") val userId: String,
-    @Json(name = "userStatus") val userStatus: String,
-    @Json(name = "roles") val roles: List<String>,
-    @Json(name = "features") val features: List<String>,
-    @Json(name = "subscription") val subscription: String,
-    @Json(name = "settings") val settings: List<String>
-)
+sealed class SessionInformation {
+  data class Available(
+      @Json(name = "email") val email: String,
+      @Json(name = "nick") val nick: String,
+      @Json(name = "username") val username: String,
+      @Json(name = "userId") val userId: String,
+      @Json(name = "userStatus") val userStatus: String,
+      @Json(name = "roles") val roles: List<String>,
+      @Json(name = "features") val features: List<String>,
+      @Json(name = "subscription") val subscription: String?,
+      @Json(name = "settings") val settings: List<String>
+  ) : SessionInformation()
+
+  object Unavailable : SessionInformation()
+}

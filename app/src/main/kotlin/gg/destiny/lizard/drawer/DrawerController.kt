@@ -14,6 +14,7 @@ import com.jakewharton.rxrelay2.PublishRelay
 import com.jakewharton.rxrelay2.Relay
 import gg.destiny.lizard.R
 import gg.destiny.lizard.account.AccountInfo
+import gg.destiny.lizard.account.AccountSubscriptionTier
 import gg.destiny.lizard.base.controller.BaseController
 import gg.destiny.lizard.base.mvi.BaseView
 import io.reactivex.Observable
@@ -52,7 +53,13 @@ class DrawerController : BaseController<DrawerView, DrawerModel, DrawerPresenter
     register<AccountInfo>(R.layout.item_account_info) { info, view, _ ->
       with(view) {
         account_info_name.text = info.nick
-        account_info_subscription_tier.text = info.subscriptionTier.name
+        account_info_subscription_tier.setText(when (info.subscriptionTier) {
+          AccountSubscriptionTier.NONE -> R.string.account_info_subscription_tier_none
+          AccountSubscriptionTier.ONE -> R.string.account_info_subscription_tier_one
+          AccountSubscriptionTier.TWO -> R.string.account_info_subscription_tier_two
+          AccountSubscriptionTier.THREE -> R.string.account_info_subscription_tier_three
+          AccountSubscriptionTier.FOUR -> R.string.account_info_subscription_tier_four
+        })
       }
     }
 

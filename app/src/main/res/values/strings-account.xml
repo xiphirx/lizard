@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="account_info.subscription_tier.none">Non-subscriber</string>
+  <string name="account_info.subscription_tier.one">Tier 1 Subscriber</string>
+  <string name="account_info.subscription_tier.two">Tier 2 Subscriber</string>
+  <string name="account_info.subscription_tier.three">Tier 3 Subscriber</string>
+  <string name="account_info.subscription_tier.four">Tier 4 Subscriber</string>
+</resources>

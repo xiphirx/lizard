@@ -14,7 +14,17 @@ class DrawerPresenter(
     val accountStatus = intent { it.firstLoad() }
         .flatMap {
           destinyApi.getSessionInformation()
-              .map { LoginStatus.LoggedIn(AccountInfo.of(it)) }
+              .map {
+                if (it.isSuccessful) {
+                  it.body()?.let {
+                    LoginStatus.LoggedIn(AccountInfo.of(it))
+                  } ?: LoginStatus.LoggedOut
+                } else {
+                  LoginStatus.LoggedOut
+                }
+              }
+              .startWith(LoginStatus.Loading)
+              .subscribeOn(Schedulers.io())
         }
 
     val requestTwitchLogin = intent { it.twitchLoginClicks }
@@ -39,6 +49,7 @@ class DrawerPresenter(
               // TODO: Figure out errors that are sent back
               .map {
                 if (it.isSuccessful) {
+                  // TODO: retrieve session info
                   LoginStatus.LoggedOut
                 } else {
                   LoginStatus.Error(LoginError.Http(it.code()))
