@@ -82,7 +82,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/chat.text_hint"
-        android:imeOptions="actionDone"
+        android:imeOptions="actionSend"
         android:maxLines="1"
         android:inputType="textAutoCorrect"/>
   </android.support.design.widget.TextInputLayout>

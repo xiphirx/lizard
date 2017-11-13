@@ -1,6 +1,5 @@
 package gg.destiny.lizard.stream
 
-import com.github.ajalt.timberkt.d
 import gg.destiny.lizard.App
 import gg.destiny.lizard.account.AccountManager
 import gg.destiny.lizard.api.TwitchTvApi
@@ -40,7 +39,12 @@ class StreamPresenter(
         .map { ChatParticipationStatus.Online(it) }
         .subscribeOn(Schedulers.io())
 
-    return Observable.merge(streamInformation, chatParticipationStatus)
+    val authoredChatMessages = intent { it.authoredChatMessages }
+        .filter { it.isNotBlank() }
+        .doOnNext { chat.sendMessage(it) }
+        .subscribeOn(Schedulers.io())
+
+    return Observable.merge(streamInformation, chatParticipationStatus, authoredChatMessages)
         .observeOn(scheduler)
         .scan(StreamModel(), { prev, state -> reduce(prev, state) })
   }
@@ -50,7 +54,6 @@ class StreamPresenter(
       return previousModel.copy(streamStatus = partialState)
     }
     if (partialState is ChatParticipationStatus) {
-      d { "Reducing $partialState"}
       return previousModel.copy(chatParticipationStatus = partialState)
     }
     return previousModel

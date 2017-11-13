@@ -3,13 +3,18 @@ package gg.destiny.lizard.stream
 import android.support.annotation.StringRes
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.github.ajalt.timberkt.d
 import com.github.ajalt.timberkt.e
+import com.jakewharton.rxbinding2.widget.RxTextView
+import com.jakewharton.rxrelay2.PublishRelay
 import gg.destiny.lizard.R
 import gg.destiny.lizard.base.controller.BaseController
 import gg.destiny.lizard.base.mvi.BaseView
@@ -28,7 +33,9 @@ import kotlinx.android.synthetic.main.controller_stream.view.stream_video_contai
 import kotlinx.android.synthetic.main.controller_stream.view.stream_viewer_num
 import kotlinx.android.synthetic.main.controller_stream.view.stream_web_view
 
-interface StreamView : BaseView<StreamModel>
+interface StreamView : BaseView<StreamModel> {
+  val authoredChatMessages: Observable<String>
+}
 
 class StreamController : BaseController<StreamView, StreamModel, StreamPresenter>(), StreamView {
   private var chatMessageHash: Int = 0
@@ -38,6 +45,7 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
       field = if (value < 0) 0 else value
     }
 
+  override val authoredChatMessages: PublishRelay<String> = PublishRelay.create<String>()
   private val chatAdapter = createChatAdapter()
   private lateinit var chatRecyclerView: RecyclerView
 
@@ -65,6 +73,15 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
           return true
         }
       }
+
+      RxTextView.editorActionEvents(stream_chat_edit_text)
+          .filter {
+            it.actionId() == EditorInfo.IME_ACTION_SEND ||
+                it.keyEvent()?.keyCode == KeyEvent.KEYCODE_ENTER
+          }
+          .doAfterNext { it.view().text = "" }
+          .map { d { "sending ${it.view().text}" } ; it.view().text.toString() }
+          .subscribe(authoredChatMessages)
     }
   }
 
