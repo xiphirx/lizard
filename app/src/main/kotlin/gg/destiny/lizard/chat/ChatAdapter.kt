@@ -1,6 +1,7 @@
 package gg.destiny.lizard.chat
 
 import android.graphics.Color
+import android.support.v4.content.ContextCompat
 import android.support.v4.text.util.LinkifyCompat
 import android.text.style.ForegroundColorSpan
 import android.text.util.Linkify
@@ -12,10 +13,20 @@ import gg.destiny.lizard.account.AccountFeature
 import gg.destiny.lizard.base.text.Spanner
 import kotlinx.android.synthetic.main.item_chat_message.view.chat_message_message
 
-fun createChatAdapter() =
+fun createChatAdapter(highlightNick: () -> String?) =
     FlexAdapter<Any>().apply {
       register<ChatMessage.Message>(R.layout.item_chat_message) { message, view, _ ->
         message.bind(view.chat_message_message)
+
+        val nick = highlightNick()
+        val data = message.data
+        view.setBackgroundColor(
+            if (nick != null && (data.contains(" $nick ") || data.startsWith("$nick "))) {
+              ContextCompat.getColor(view.context, R.color.white10)
+            } else {
+              Color.TRANSPARENT
+            }
+        )
       }
     }
 
@@ -44,6 +55,6 @@ private fun ChatMessage.Message.bind(message: TextView) {
 }
 
 private fun colorForFeatures(features: List<String>) =
-    features.mapNotNull { AccountFeature.of(it) }
+    features.map { AccountFeature.of(it) }
         .sortedByDescending { it.priority }
         .firstOrNull()?.color ?: Color.WHITE

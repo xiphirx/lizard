@@ -46,7 +46,8 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
     }
 
   override val authoredChatMessages: PublishRelay<String> = PublishRelay.create<String>()
-  private val chatAdapter = createChatAdapter()
+  private val chatAdapter = createChatAdapter({ highlightNick })
+  private var highlightNick: String? = null
   private lateinit var chatRecyclerView: RecyclerView
 
   override fun createPresenter() = StreamPresenter()
@@ -109,8 +110,10 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
     when (model.chatParticipationStatus) {
       is ChatParticipationStatus.Offline ->
           layout.stream_chat_text_input_layout.visibility = View.GONE
-      is ChatParticipationStatus.Online ->
-          setChatCapabilities(editable = true, hint = R.string.chat_text_hint)
+      is ChatParticipationStatus.Online -> {
+        setChatCapabilities(editable = true, hint = R.string.chat_text_hint)
+        highlightNick = model.chatParticipationStatus.accountInfo.nick
+      }
       is ChatParticipationStatus.Banned ->
           setChatCapabilities(editable = false, hint = R.string.chat_text_hint_banned)
     }
