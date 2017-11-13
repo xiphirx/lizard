@@ -55,6 +55,7 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
     return inflater.inflate(R.layout.controller_stream, container, false).apply {
       chatRecyclerView = stream_chat_recycler_view
       with(chatRecyclerView) {
+        itemAnimator = null
         adapter = chatAdapter
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
       }
