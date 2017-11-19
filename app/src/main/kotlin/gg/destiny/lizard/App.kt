@@ -37,10 +37,10 @@ class App : Application() {
       }
     }
 
-    Thread.setDefaultUncaughtExceptionHandler { _, e ->
-      d(e) { "Uncaught" }
-      throw RuntimeException(e)
-    }
+//    Thread.setDefaultUncaughtExceptionHandler { _, e ->
+//      d(e) { "Uncaught" }
+//      throw RuntimeException(e)
+//    }
 
     JodaTimeAndroid.init(this)
     if (BuildConfig.DEBUG) {
