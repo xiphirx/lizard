@@ -39,7 +39,9 @@ private fun ChatSocket.Message.UserMessage.bind(packageInfo: ChatGuiPackage, mes
       .pushSpan(ForegroundColorSpan(colorForFeatures(features)))
       .append(nick)
       .popSpan()
-      .pushSpan(ForegroundColorSpan(0xFFAAAAAA.toInt()))
+      .pushSpan(
+          ForegroundColorSpan(
+              if (data.firstOrNull() == '>') 0xFF6CA528.toInt() else 0xFFAAAAAA.toInt()))
       .append(": ")
 
   data.split(' ')
