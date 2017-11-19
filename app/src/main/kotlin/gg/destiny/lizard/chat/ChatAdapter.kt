@@ -11,12 +11,14 @@ import com.github.ajalt.flexadapter.register
 import gg.destiny.lizard.R
 import gg.destiny.lizard.account.AccountFeature
 import gg.destiny.lizard.base.text.Spanner
+import gg.destiny.lizard.core.chat.ChatGuiPackage
+import gg.destiny.lizard.core.chat.ChatSocket
 import kotlinx.android.synthetic.main.item_chat_message.view.chat_message_message
 
-fun createChatAdapter(highlightNick: () -> String?) =
+fun createChatAdapter(chatGuiPackage: () -> ChatGuiPackage, highlightNick: () -> String?) =
     FlexAdapter<Any>().apply {
-      register<ChatMessage.Message>(R.layout.item_chat_message) { message, view, _ ->
-        message.bind(view.chat_message_message)
+      register<ChatSocket.Message.UserMessage>(R.layout.item_chat_message) { message, view, _ ->
+        message.bind(chatGuiPackage(), view.chat_message_message)
 
         val nick = highlightNick()
         val data = message.data
@@ -30,7 +32,7 @@ fun createChatAdapter(highlightNick: () -> String?) =
       }
     }
 
-private fun ChatMessage.Message.bind(message: TextView) {
+private fun ChatSocket.Message.UserMessage.bind(packageInfo: ChatGuiPackage, message: TextView) {
   val spanner = Spanner()
       .pushSpan(ForegroundColorSpan(colorForFeatures(features)))
       .append(nick)
@@ -40,10 +42,10 @@ private fun ChatMessage.Message.bind(message: TextView) {
 
   data.split(' ')
       .forEachIndexed { index, s ->
-        val emote = EMOTE_MAP[s]
+        val emote = packageInfo.emoteMap[s]
         if (emote != null) {
           spanner.append(' ')
-              .pushPopSpan(emote.span)
+              .pushPopSpan(EmoteSpan(emote))
               .append(' ')
         } else {
           spanner.append(if (index != 0) " $s" else s)

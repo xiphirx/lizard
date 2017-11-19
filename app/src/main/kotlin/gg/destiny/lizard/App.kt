@@ -9,6 +9,8 @@ import com.squareup.moshi.Moshi
 import gg.destiny.lizard.account.AccountCookieJar
 import gg.destiny.lizard.account.AccountInfoStorage
 import gg.destiny.lizard.api.TwitchTvApi
+import gg.destiny.lizard.chat.EmoteDrawable
+import gg.destiny.lizard.core.logging.Logger
 import net.danlew.android.joda.JodaTimeAndroid
 import okhttp3.OkHttpClient
 import timber.log.Timber
@@ -29,6 +31,10 @@ class App : Application() {
     if (BuildConfig.DEBUG) {
       StrictMode.enableDefaults()
       Timber.plant(Timber.DebugTree())
+      Logger.instance = object : Logger.Instance {
+        override fun log(message: String)  = d { message }
+        override fun log(t: Throwable, message: String)  = d(t) { message }
+      }
     }
 
     Thread.setDefaultUncaughtExceptionHandler { _, e ->
@@ -40,5 +46,7 @@ class App : Application() {
     if (BuildConfig.DEBUG) {
       Stetho.initializeWithDefaults(this)
     }
+
+    EmoteDrawable.density = resources.displayMetrics.density
   }
 }

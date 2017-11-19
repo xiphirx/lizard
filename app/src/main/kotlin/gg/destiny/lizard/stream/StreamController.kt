@@ -1,8 +1,10 @@
 package gg.destiny.lizard.stream
 
+import android.graphics.BitmapFactory
 import android.support.annotation.StringRes
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.DisplayMetrics
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -18,8 +20,11 @@ import com.jakewharton.rxrelay2.PublishRelay
 import gg.destiny.lizard.R
 import gg.destiny.lizard.base.controller.BaseController
 import gg.destiny.lizard.base.mvi.BaseView
-import gg.destiny.lizard.chat.ChatMessage
+import gg.destiny.lizard.chat.EmoteDrawable
 import gg.destiny.lizard.chat.createChatAdapter
+import gg.destiny.lizard.core.chat.ChatGuiPackage
+import gg.destiny.lizard.core.chat.ChatSocket
+import gg.destiny.lizard.core.chat.emptyPackage
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -46,7 +51,9 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
     }
 
   override val authoredChatMessages: PublishRelay<String> = PublishRelay.create<String>()
-  private val chatAdapter = createChatAdapter({ highlightNick })
+  private val chatAdapter = createChatAdapter({ chatGuiPackage }, { highlightNick })
+  private var textureLoadingDisposable: Disposable? = null
+  private var chatGuiPackage: ChatGuiPackage = emptyPackage
   private var highlightNick: String? = null
   private lateinit var chatRecyclerView: RecyclerView
 
@@ -117,6 +124,35 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
       is ChatParticipationStatus.Banned ->
           setChatCapabilities(editable = false, hint = R.string.chat_text_hint_banned)
     }
+
+    updateChatGuiPackage(model.chatGuiPackage)
+  }
+
+  private fun updateChatGuiPackage(chatGuiPackage: ChatGuiPackage) {
+    if (this.chatGuiPackage == chatGuiPackage) {
+      return
+    }
+
+    this.chatGuiPackage = chatGuiPackage
+
+    if (chatGuiPackage.texturePath.isBlank()) {
+      return
+    }
+
+    val densityDpi = layout.context.resources.displayMetrics.densityDpi
+    textureLoadingDisposable?.dispose()
+    textureLoadingDisposable = Observable.just(chatGuiPackage.texturePath)
+        .map {
+          val options = BitmapFactory.Options().apply {
+            inScreenDensity = densityDpi
+            inTargetDensity = densityDpi
+            inDensity = DisplayMetrics.DENSITY_DEFAULT
+          }
+          BitmapFactory.decodeFile(chatGuiPackage.texturePath, options)
+        }
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe { EmoteDrawable.texture = it }
   }
 
   private fun setChatCapabilities(editable: Boolean, @StringRes hint: Int) {
@@ -135,34 +171,35 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
     view?.stream_web_view?.loadUrl(newUrl)
   }
 
-  private fun registerChatObservable(chatMessages: Observable<ChatMessage>) {
-    if (chatMessageHash != chatMessages.hashCode()) {
-      chatMessageHash = chatMessages.hashCode()
-      chatMessageSubscription?.dispose()
-      chatMessageSubscription = chatMessages
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(
-              { handleChatMessage(it) },
-              { e(it) { "Error adding message" } })
+  private fun registerChatObservable(chatMessages: Observable<ChatSocket.Message>) {
+    if (chatMessageHash == chatMessages.hashCode()) {
+      return
     }
+    chatMessageHash = chatMessages.hashCode()
+    chatMessageSubscription?.dispose()
+    chatMessageSubscription = chatMessages
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(
+            { handleChatMessage(it) },
+            { e(it) { "Error adding message" } })
   }
 
-  private fun handleChatMessage(message: ChatMessage) {
+  private fun handleChatMessage(message: ChatSocket.Message) {
     when (message) {
-      is ChatMessage.Names -> {
+      is ChatSocket.Message.Names -> {
         chatUserCount = message.connectioncount
         updateChatUserCount(chatUserCount)
       }
-      is ChatMessage.Message -> {
+      is ChatSocket.Message.UserMessage -> {
         val autoScroll = !chatRecyclerView.canScrollVertically(1)
         chatAdapter.items.add(message)
         if (autoScroll) {
           chatRecyclerView.scrollToPosition(chatAdapter.items.lastIndex)
         }
       }
-      is ChatMessage.Join -> updateChatUserCount(++chatUserCount)
-      is ChatMessage.Quit -> updateChatUserCount(--chatUserCount)
+      is ChatSocket.Message.Join -> updateChatUserCount(++chatUserCount)
+      is ChatSocket.Message.Quit -> updateChatUserCount(--chatUserCount)
     }
   }
 

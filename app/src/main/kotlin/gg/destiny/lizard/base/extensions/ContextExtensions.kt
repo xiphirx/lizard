@@ -3,7 +3,6 @@ package gg.destiny.lizard.base.extensions
 import android.content.Context
 import android.content.res.TypedArray
 import android.support.annotation.ColorRes
-import android.support.annotation.StringRes
 import android.support.annotation.StyleableRes
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet

@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import gg.destiny.lizard.base.extensions.scope
-import gg.destiny.lizard.chat.EMOTE_MAP
 import java.util.Random
 
 class EmoteFireView @JvmOverloads constructor(
@@ -77,9 +76,9 @@ class EmoteFireView @JvmOverloads constructor(
 
   override fun onFinishInflate() {
     super.onFinishInflate()
-    EMOTE_MAP.entries.forEach {
-      floatyBois.add(FloatyBoi(it.value.drawable.mutate(), this))
-    }
+//    EMOTE_MAP.entries.forEach {
+//      floatyBois.add(FloatyBoi(it.value.drawable.mutate(), this))
+//    }
   }
 
   override fun onDraw(canvas: Canvas) {
