@@ -52,7 +52,7 @@ object EmoteDrawable : Drawable() {
   override fun getOpacity() = PixelFormat.TRANSLUCENT
 
   override fun setColorFilter(colorFilter: ColorFilter?) {
-    // No-op
+    paint.colorFilter = colorFilter
   }
 
   private fun dpToPx(dp: Int) = dp * density

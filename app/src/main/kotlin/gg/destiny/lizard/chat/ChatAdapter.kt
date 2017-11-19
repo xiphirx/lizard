@@ -1,10 +1,12 @@
 package gg.destiny.lizard.chat
 
+import android.animation.ObjectAnimator
 import android.graphics.Color
 import android.support.v4.content.ContextCompat
 import android.support.v4.text.util.LinkifyCompat
 import android.text.style.ForegroundColorSpan
 import android.text.util.Linkify
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.TextView
 import com.github.ajalt.flexadapter.FlexAdapter
 import com.github.ajalt.flexadapter.register
@@ -44,8 +46,14 @@ private fun ChatSocket.Message.UserMessage.bind(packageInfo: ChatGuiPackage, mes
       .forEachIndexed { index, s ->
         val emote = packageInfo.emoteMap[s]
         if (emote != null) {
+          val span = EmoteSpan(emote)
+          when (emote.name) {
+            "REE", "OverRustle" -> rage(span, message)
+            "MLADY" -> tipTip(span, message)
+            "DANKMEMES" -> dankHueShift(span, message)
+          }
           spanner.append(' ')
-              .pushPopSpan(EmoteSpan(emote))
+              .pushPopSpan(span)
               .append(' ')
         } else {
           spanner.append(if (index != 0) " $s" else s)
@@ -54,6 +62,34 @@ private fun ChatSocket.Message.UserMessage.bind(packageInfo: ChatGuiPackage, mes
 
   message.text = spanner.build()
   LinkifyCompat.addLinks(message, Linkify.WEB_URLS)
+}
+
+private fun tipTip(span: EmoteSpan, view: TextView) {
+  ObjectAnimator.ofFloat(span, EmoteSpan.RotateProperty, 0f, 15f, 0f, 15f, 0f).apply {
+    addUpdateListener { view.invalidate() }
+    interpolator = AccelerateDecelerateInterpolator()
+    duration = 500
+    start()
+  }
+}
+
+private fun rage(span: EmoteSpan, view: TextView) {
+  ObjectAnimator.ofFloat(span, EmoteSpan.TranslateXProperty, 0f, -5f, 0f, 5f, 0f).apply {
+    addUpdateListener { view.invalidate() }
+    interpolator = AccelerateDecelerateInterpolator()
+    duration = 100
+    repeatCount = 3
+    start()
+  }
+}
+
+private fun dankHueShift(span: EmoteSpan, view: TextView) {
+  ObjectAnimator.ofFloat(span, EmoteSpan.HueShiftProperty, 0f, 360f, 0f).apply {
+    addUpdateListener { view.invalidate() }
+    interpolator = AccelerateDecelerateInterpolator()
+    duration = 1000
+    start()
+  }
 }
 
 private fun colorForFeatures(features: List<String>) =
