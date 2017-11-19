@@ -51,6 +51,8 @@ android {
 }
 
 dependencies {
+  compile project(':core')
+
   compile deps.appCompat
   compile deps.design
   compile deps.cardView

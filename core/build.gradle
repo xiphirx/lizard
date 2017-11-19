@@ -1,0 +1,19 @@
+apply plugin: "kotlin"
+
+dependencies {
+    compile deps.kotlinStdlib
+
+    compile deps.rxJava
+    compile deps.rxRelay
+
+    compile deps.moshi
+    compile deps.moshiKotlin
+
+    compile deps.retrofit
+    compile deps.retrofitRxAdapter
+    compile deps.retrofitScalarsConverter
+    compile deps.retrofitMoshiConverter
+
+    compile deps.okhttp
+    compile deps.okhttpLogInterceptor
+}
