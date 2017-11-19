@@ -42,8 +42,9 @@ enum class AccountFeature(val key: String, val priority: Int, val color: Int? = 
   SUBSCRIBER_T2("flair1", 4, 0xFF488CE7.toInt()),
   SUBSCRIBER_T3("flair3", 5, 0xFF0060FF.toInt()),
   SUBSCRIBER_T4("flair8", 6, 0xFFA427D6.toInt()),
-  VIP("vip", 7, 0xFF4DB524.toInt()),
-  ADMIN("admin", 8, 0xFFB91010.toInt());
+  BOT("bot", 7, 0xFFE79015.toInt()),
+  VIP("vip", 8, 0xFF4DB524.toInt()),
+  ADMIN("admin", 9, 0xFFB91010.toInt());
 
   companion object {
     private val VALUES = values()
