@@ -44,9 +44,11 @@ class Chat(
             val (version, emotes) = emoteList
             ChatGuiPackage(version, texturePath, emotes.associate { it.name to it })
           }
-          .subscribe(
-              { storage.storeGuiPackageInfo(it) ; updateDisposable = null },
-              { e -> L(e) { "Couldn't update gui package info" } })
+          .subscribe({
+            storage.storeGuiPackageInfo(it)
+            chatGuiPackageRelay.accept(it)
+            updateDisposable = null
+          }, { e -> L(e) { "Couldn't update gui package info" } })
     }
   }
 
