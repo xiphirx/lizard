@@ -16,7 +16,7 @@ class ChatGuiApi(baseUrl: String = BASE_URL, okHttpClient: OkHttpClient, moshi: 
     private const val BASE_URL = "https://raw.githubusercontent.com/destinygg/chat-gui/master/"
     private val PATTERN_EMOTE_BLOCK =
         Pattern.compile(
-            "\\.chat-emote\\.chat-emote-([A-Za-z]*)\\{([a-zA-Z:;0-9\\s\\-]*)\\}",
+            "\\.chat-emote\\.chat-emote-([A-Za-z0-9]*)\\{([a-zA-Z:;0-9\\s\\-]*)\\}",
             Pattern.DOTALL or Pattern.MULTILINE)
     private val PATTERN_POSITION =
         Pattern.compile("background-position:\\s*([\\-0-9]*)(?:px)?\\s*([\\-0-9]*)(?:px)?")
