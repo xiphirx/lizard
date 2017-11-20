@@ -20,7 +20,9 @@ import com.jakewharton.rxrelay2.PublishRelay
 import gg.destiny.lizard.R
 import gg.destiny.lizard.base.controller.BaseController
 import gg.destiny.lizard.base.mvi.BaseView
+import gg.destiny.lizard.chat.ComboMessage
 import gg.destiny.lizard.chat.EmoteDrawable
+import gg.destiny.lizard.chat.EmoteSpan
 import gg.destiny.lizard.chat.createChatAdapter
 import gg.destiny.lizard.core.chat.ChatGuiPackage
 import gg.destiny.lizard.core.chat.ChatSocket
@@ -191,15 +193,44 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
         chatUserCount = message.connectioncount
         updateChatUserCount(chatUserCount)
       }
-      is ChatSocket.Message.UserMessage -> {
-        val autoScroll = !chatRecyclerView.canScrollVertically(1)
-        chatAdapter.items.add(message)
-        if (autoScroll) {
-          chatRecyclerView.scrollToPosition(chatAdapter.items.lastIndex)
-        }
-      }
+      is ChatSocket.Message.UserMessage -> handleUserChatMessage(message)
       is ChatSocket.Message.Join -> updateChatUserCount(++chatUserCount)
       is ChatSocket.Message.Quit -> updateChatUserCount(--chatUserCount)
+    }
+  }
+
+  private fun handleUserChatMessage(message: ChatSocket.Message.UserMessage) {
+    val autoScroll = !chatRecyclerView.canScrollVertically(1)
+    val lastMessage = chatAdapter.items.lastOrNull()
+    val trimmedMessage = message.data.trim()
+    val comboIndex = chatAdapter.items.lastIndex
+    if (lastMessage is ComboMessage) {
+      when (trimmedMessage) {
+        lastMessage.emoteSpan.emote.name -> {
+          // Increment an ongoing combo
+          lastMessage.count++
+          lastMessage.ticked = true
+        }
+        else -> {
+          // Complete a combo
+          lastMessage.completed = true
+          chatAdapter.items.add(message)
+        }
+      }
+      chatAdapter.notifyItemChanged(comboIndex)
+    } else if (lastMessage is ChatSocket.Message.UserMessage &&
+        trimmedMessage == lastMessage.data.trim() &&
+        trimmedMessage in chatGuiPackage.emoteMap) {
+      // Begin a combo
+      val emote = chatGuiPackage.emoteMap[trimmedMessage]!!
+      chatAdapter.items[comboIndex] = ComboMessage(EmoteSpan(emote))
+      chatAdapter.notifyItemChanged(comboIndex)
+    } else {
+      chatAdapter.items.add(message)
+    }
+
+    if (autoScroll) {
+      chatRecyclerView.scrollToPosition(chatAdapter.items.lastIndex)
     }
   }
 

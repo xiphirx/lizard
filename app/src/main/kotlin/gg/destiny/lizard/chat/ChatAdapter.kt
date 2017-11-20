@@ -4,7 +4,9 @@ import android.animation.ObjectAnimator
 import android.graphics.Color
 import android.support.v4.content.ContextCompat
 import android.support.v4.text.util.LinkifyCompat
+import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
+import android.text.style.TextAppearanceSpan
 import android.text.util.Linkify
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.TextView
@@ -16,6 +18,27 @@ import gg.destiny.lizard.base.text.Spanner
 import gg.destiny.lizard.core.chat.ChatGuiPackage
 import gg.destiny.lizard.core.chat.ChatSocket
 import kotlinx.android.synthetic.main.item_chat_message.view.chat_message_message
+
+data class ComboMessage(
+    val emoteSpan: EmoteSpan,
+    var count: Int = 2,
+    var completed: Boolean = false,
+    var ticked: Boolean = true
+) {
+  fun bind(view: TextView) {
+    view.text = Spanner()
+        .pushPopSpan(emoteSpan)
+        .pushSpan(ForegroundColorSpan(Color.WHITE))
+        .pushSpan(AbsoluteSizeSpan((view.textSize * (1 + 0.05f * count)).toInt(), false))
+        .append(" ${count}x ")
+        .popSpan()
+        .popSpan()
+        .pushSpan(ForegroundColorSpan(0xFFAAAAAA.toInt()))
+        .append(if (completed) "C-C-C-COMBO" else "HITS")
+        .build()
+    ticked = false
+  }
+}
 
 fun createChatAdapter(chatGuiPackage: () -> ChatGuiPackage, highlightNick: () -> String?) =
     FlexAdapter<Any>().apply {
@@ -31,6 +54,10 @@ fun createChatAdapter(chatGuiPackage: () -> ChatGuiPackage, highlightNick: () ->
               Color.TRANSPARENT
             }
         )
+      }
+
+      register<ComboMessage>(R.layout.item_chat_message) { combo, view, _ ->
+        combo.bind(view.chat_message_message)
       }
     }
 

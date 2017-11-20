@@ -12,7 +12,7 @@ import android.util.Property
 import gg.destiny.lizard.base.extensions.scope
 import gg.destiny.lizard.core.chat.Emote
 
-class EmoteSpan(private val emote: Emote) : DynamicDrawableSpan(), UpdateAppearance {
+class EmoteSpan(val emote: Emote) : DynamicDrawableSpan(), UpdateAppearance {
   companion object {
     const val lR = 0.213f
     const val lG = 0.715f
