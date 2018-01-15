@@ -40,7 +40,7 @@ object EmoteDrawable : Drawable() {
     val em = emote ?: return
     canvas.clipRect(0, 0, bounds.width(), bounds.height())
     canvas.scope {
-      translate(dpToPx(em.x), dpToPx(em.y))
+      translate(dpToPx(em.x) - 0.5f, dpToPx(em.y) - 0.5f)
       canvas.drawBitmap(bm, 0f, 0f, paint)
     }
   }
