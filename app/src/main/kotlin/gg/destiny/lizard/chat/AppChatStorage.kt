@@ -6,6 +6,7 @@ import com.squareup.moshi.Moshi
 import gg.destiny.lizard.App
 import gg.destiny.lizard.core.chat.ChatGuiPackage
 import gg.destiny.lizard.core.chat.ChatStorage
+import gg.destiny.lizard.core.chat.Emote
 import gg.destiny.lizard.core.logging.L
 import java.io.File
 
@@ -22,7 +23,7 @@ class AppChatStorage(
     const val KEY_EMOTES = "emotes"
   }
 
-  private val emoteTypeAdapter = moshi.adapter(gg.destiny.lizard.core.chat.Emote::class.java)
+  private val emoteTypeAdapter = moshi.adapter(Emote::class.java)
 
   override fun storeGuiPackageInfo(guiPackage: ChatGuiPackage) {
     synchronized(this) {
@@ -31,9 +32,9 @@ class AppChatStorage(
       preferences.edit()
           .putString(KEY_VERSION, guiPackage.version)
           .putString(KEY_TEXTURE_PATH, guiPackage.texturePath)
-          .putStringSet(KEY_EMOTES, guiPackage.emoteMap
-              .map { emoteTypeAdapter.toJson(it.value) }
-              .toSet())
+          .putStringSet(
+              KEY_EMOTES,
+              guiPackage.emoteMap.map { emoteTypeAdapter.toJson(it.value) }.toSet())
           .apply()
     }
   }
@@ -43,8 +44,8 @@ class AppChatStorage(
       val version = preferences.getString(KEY_VERSION, null) ?: return null
       val texturePath = preferences.getString(KEY_TEXTURE_PATH, null) ?: return null
       val emoteSet = preferences.getStringSet(KEY_EMOTES, null) ?: return null
-      val emoteMap = emoteSet.mapNotNull { emoteTypeAdapter.fromJson(it) }
-          .associate { it.name to it }
+      val emoteMap =
+          emoteSet.mapNotNull { emoteTypeAdapter.fromJson(it) }.associate { it.name to it }
       return ChatGuiPackage(version, texturePath, emoteMap)
     }
   }

@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator
 import android.graphics.Color
 import android.support.v4.content.ContextCompat
 import android.support.v4.text.util.LinkifyCompat
+import android.support.v7.widget.RecyclerView
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.TextAppearanceSpan
@@ -40,26 +41,28 @@ data class ComboMessage(
   }
 }
 
-fun createChatAdapter(chatGuiPackage: () -> ChatGuiPackage, highlightNick: () -> String?) =
-    FlexAdapter<Any>().apply {
-      register<ChatSocket.Message.UserMessage>(R.layout.item_chat_message) { message, view, _ ->
-        message.bind(chatGuiPackage(), view.chat_message_message)
+fun createChatAdapter(chatGuiPackage: () -> ChatGuiPackage, highlightNick: () -> String?)
+    : FlexAdapter<Any> {
+  return FlexAdapter<Any>().apply {
+    register<ChatSocket.Message.UserMessage>(R.layout.item_chat_message) { message, view, _ ->
+      message.bind(chatGuiPackage(), view.chat_message_message)
 
-        val nick = highlightNick()
-        val data = message.data
-        view.setBackgroundColor(
-            if (nick != null && (data.contains(" $nick ") || data.startsWith("$nick "))) {
-              ContextCompat.getColor(view.context, R.color.white10)
-            } else {
-              Color.TRANSPARENT
-            }
-        )
-      }
-
-      register<ComboMessage>(R.layout.item_chat_message) { combo, view, _ ->
-        combo.bind(view.chat_message_message)
-      }
+      val nick = highlightNick()
+      val data = message.data
+      view.setBackgroundColor(
+          if (nick != null && (data.contains(" $nick ") || data.startsWith("$nick "))) {
+            ContextCompat.getColor(view.context, R.color.white10)
+          } else {
+            Color.TRANSPARENT
+          }
+      )
     }
+
+    register<ComboMessage>(R.layout.item_chat_message) { combo, view, _ ->
+      combo.bind(view.chat_message_message)
+    }
+  }
+}
 
 private fun ChatSocket.Message.UserMessage.bind(packageInfo: ChatGuiPackage, message: TextView) {
   val spanner = Spanner()
@@ -121,7 +124,8 @@ private fun dankHueShift(span: EmoteSpan, view: TextView) {
   }
 }
 
-private fun colorForFeatures(features: List<String>) =
-    features.map { AccountFeature.of(it) }
-        .sortedByDescending { it.priority }
-        .firstOrNull()?.color ?: Color.WHITE
+private fun colorForFeatures(features: List<String>): Int {
+  return features.map { AccountFeature.of(it) }
+      .sortedByDescending { it.priority }
+      .firstOrNull()?.color ?: Color.WHITE
+}
