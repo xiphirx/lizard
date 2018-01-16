@@ -58,16 +58,18 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
   private var chatGuiPackage: ChatGuiPackage = emptyPackage
   private var highlightNick: String? = null
   private lateinit var chatRecyclerView: RecyclerView
+  private lateinit var chatLayoutManager: LinearLayoutManager
 
   override fun createPresenter() = StreamPresenter()
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
     return inflater.inflate(R.layout.controller_stream, container, false).apply {
+      chatLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
       chatRecyclerView = stream_chat_recycler_view
       with(chatRecyclerView) {
         itemAnimator = null
         adapter = chatAdapter
-        layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        layoutManager = chatLayoutManager
       }
 
       with(stream_web_view.settings) {
@@ -200,7 +202,9 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
   }
 
   private fun handleUserChatMessage(message: ChatSocket.Message.UserMessage) {
-    val autoScroll = !chatRecyclerView.canScrollVertically(1)
+    val lastVisibleIndex = chatLayoutManager.findLastCompletelyVisibleItemPosition()
+    val lastDataIndex = chatAdapter.items.lastIndex
+    val autoScroll = lastVisibleIndex == -1 || lastVisibleIndex == lastDataIndex
     val lastMessage = chatAdapter.items.lastOrNull()
     val trimmedMessage = message.data.trim()
     val comboIndex = chatAdapter.items.lastIndex
@@ -230,7 +234,7 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
     }
 
     if (autoScroll) {
-      chatRecyclerView.scrollToPosition(chatAdapter.items.lastIndex)
+      chatRecyclerView.post({ chatRecyclerView.scrollToPosition(chatAdapter.items.lastIndex) })
     }
   }
 
