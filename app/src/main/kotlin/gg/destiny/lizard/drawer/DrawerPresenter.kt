@@ -14,21 +14,7 @@ class DrawerPresenter(
   override fun bindIntents(scheduler: Scheduler): Observable<DrawerModel> {
     val accountStatus = intent { it.firstLoad() }
         .flatMap {
-          accountManager.queryAccountInfo()
-              .map {
-                if (it.isSuccessful) {
-                  it.body()?.let {
-                    val accountInfo = AccountInfo.of(it)
-                    accountManager.storeAccountInfo(accountInfo)
-                    LoginStatus.LoggedIn(accountInfo)
-                  } ?: LoginStatus.LoggedOut
-                } else {
-                  accountManager.clearAccountInfo()
-                  LoginStatus.LoggedOut
-                }
-              }
-              .startWith(LoginStatus.Loading)
-              .subscribeOn(Schedulers.io())
+          retrieveLoginStatus().startWith(LoginStatus.Loading).subscribeOn(Schedulers.io())
         }
 
     val requestTwitchLogin = intent { it.twitchLoginClicks }
@@ -51,12 +37,11 @@ class DrawerPresenter(
         .flatMap {
           accountManager.completeOAuthLogin(it)
               // TODO: Figure out errors that are sent back
-              .map {
+              .flatMap {
                 if (it.isSuccessful) {
-                  // TODO: retrieve session info
-                  LoginStatus.LoggedOut
+                  retrieveLoginStatus()
                 } else {
-                  LoginStatus.Error(LoginError.Http(it.code()))
+                  Observable.just(LoginStatus.Error(LoginError.Http(it.code())))
                 }
               }
               .startWith(LoginStatus.Loading)
@@ -66,6 +51,22 @@ class DrawerPresenter(
     return Observable.merge(accountStatus, requestTwitchLogin, oauthRedirect)
         .observeOn(scheduler)
         .scan(DrawerModel(), { _, state -> reduce(state) })
+  }
+
+  private fun retrieveLoginStatus(): Observable<LoginStatus> {
+    return accountManager.queryAccountInfo()
+        .map {
+          if (it.isSuccessful) {
+            it.body()?.let {
+              val accountInfo = AccountInfo.of(it)
+              accountManager.storeAccountInfo(accountInfo)
+              LoginStatus.LoggedIn(accountInfo)
+            } ?: LoginStatus.LoggedOut
+          } else {
+            accountManager.clearAccountInfo()
+            LoginStatus.LoggedOut
+          }
+        }
   }
 
   private fun reduce(state: LoginStatus) = DrawerModel(state)
