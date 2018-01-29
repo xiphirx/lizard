@@ -10,7 +10,8 @@ import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 
-abstract class BaseController<V : MvpView, VS, out P : MviBasePresenter<V, VS>> : Controller, BaseView<VS> {
+abstract class BaseController<V : MvpView, VS, out P : MviBasePresenter<V, VS>>
+  : Controller, BaseView<VS> {
   constructor() : super()
   constructor(arguments: Bundle) : super(arguments)
 
