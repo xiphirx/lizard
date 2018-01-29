@@ -1,13 +1,11 @@
 package gg.destiny.lizard.stream
 
-import android.graphics.BitmapFactory
 import gg.destiny.lizard.App
 import gg.destiny.lizard.account.AccountCookieJar
 import gg.destiny.lizard.account.AccountManager
 import gg.destiny.lizard.api.TwitchTvApi
 import gg.destiny.lizard.base.mvi.BasePresenter
 import gg.destiny.lizard.chat.AppChatStorage
-import gg.destiny.lizard.chat.EmoteDrawable
 import gg.destiny.lizard.core.chat.Chat
 import gg.destiny.lizard.core.chat.ChatGuiApi
 import gg.destiny.lizard.core.chat.ChatGuiPackage
@@ -70,16 +68,12 @@ class StreamPresenter(
   }
 
   private fun reduce(previousModel: StreamModel, partialState: Any): StreamModel {
-    if (partialState is StreamStatus) {
-      return previousModel.copy(streamStatus = partialState)
+    return when (partialState) {
+      is StreamStatus -> previousModel.copy(streamStatus = partialState)
+      is ChatParticipationStatus -> previousModel.copy(chatParticipationStatus = partialState)
+      is ChatGuiPackage -> previousModel.copy(chatGuiPackage = partialState)
+      else -> previousModel
     }
-    if (partialState is ChatParticipationStatus) {
-      return previousModel.copy(chatParticipationStatus = partialState)
-    }
-    if (partialState is ChatGuiPackage) {
-      return previousModel.copy(chatGuiPackage = partialState)
-    }
-    return previousModel
   }
 
   override fun attachView(view: StreamView) {
