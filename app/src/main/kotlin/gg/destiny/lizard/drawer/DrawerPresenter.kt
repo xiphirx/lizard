@@ -50,7 +50,7 @@ class DrawerPresenter(
 
     return Observable.merge(accountStatus, requestTwitchLogin, oauthRedirect)
         .observeOn(scheduler)
-        .scan(DrawerModel(), { _, state -> reduce(state) })
+        .scan(DrawerModel()) { _, state -> reduce(state) }
   }
 
   private fun retrieveLoginStatus(): Observable<LoginStatus> {
