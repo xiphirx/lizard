@@ -10,10 +10,16 @@
     <style name="BaseTheme.Material.Dark" parent="Theme.AppCompat">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+
+        <!-- App specific attributes -->
+        <item name="lzIconTintColor">@color/white</item>
     </style>
     <style name="BaseTheme.Material.Light" parent="Theme.AppCompat.Light">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+
+        <!-- App specific attributes -->
+        <item name="lzIconTintColor">@color/black</item>
     </style>
     <style name="Default">
         <item name="colorPrimary">@color/theme.default.colorPrimary</item>
