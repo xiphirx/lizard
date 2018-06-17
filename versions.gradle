@@ -1,23 +1,23 @@
 ext {
   versions = [
-      kotlin     : '1.1.51',
-      agp        : '3.0.0',
+      kotlin     : '1.2.50',
+      agp        : '3.1.0',
 
-      targetSdk  : 26,
-      compileSdk : 26,
+      targetSdk  : 27,
+      compileSdk : 27,
       minSdk     : 21,
-      buildTools : '26.0.2',
+      buildTools : '27.0.3',
 
       versionCode: 1,
       versionName: '1.0'
   ]
 
-  final supportLibraryVersion = '26.0.2'
-  final okhttpVersion = '3.9.0'
-  final retrofitVersion = '2.3.0'
+  final supportLibraryVersion = '27.1.1'
+  final okhttpVersion = '3.10.0'
+  final retrofitVersion = '2.4.0'
   final conductorVersion = '2.1.4'
-  final moshiVersion = '1.5.0'
-  final rxBindingVersion = '2.0.0'
+  final moshiVersion = '1.6.0'
+  final rxBindingVersion = '2.1.1'
 
   plugs = [
       agp             : "com.android.tools.build:gradle:$versions.agp",
