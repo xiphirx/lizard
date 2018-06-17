@@ -4,8 +4,8 @@ import android.app.Application
 import android.os.StrictMode
 import com.facebook.stetho.Stetho
 import com.github.ajalt.timberkt.d
-import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import gg.destiny.lizard.account.AccountCookieJar
 import gg.destiny.lizard.account.AccountInfoStorage
 import gg.destiny.lizard.api.TwitchTvApi
