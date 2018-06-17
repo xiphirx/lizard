@@ -37,10 +37,10 @@ data class SerializableCookie(
       .value(value)
       .expiresAt(expiresAt)
       .path(path).apply {
-    if (secure) secure()
-    if (httpOnly) httpOnly()
-    if (hostOnly) hostOnlyDomain(domain) else domain(domain)
-  }
+        if (secure) secure()
+        if (httpOnly) httpOnly()
+        if (hostOnly) hostOnlyDomain(domain) else domain(domain)
+      }
       .build()
 }
 
