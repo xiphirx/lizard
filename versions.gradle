@@ -3,8 +3,8 @@ ext {
       kotlin     : '1.2.50',
       agp        : '3.1.0',
 
-      targetSdk  : 27,
-      compileSdk : 27,
+      targetSdk  : 28,
+      compileSdk : 28,
       minSdk     : 21,
       buildTools : '27.0.3',
 
