@@ -51,38 +51,38 @@ android {
 }
 
 dependencies {
-  compile project(':core')
+  implementation project(':core')
 
-  compile deps.appCompat
-  compile deps.design
-  compile deps.cardView
-  compile deps.annotations
-  compile deps.kotlinStdlib
-  compile deps.timberkt
-  compile deps.glide
-  compile deps.flexadapter
-  compile deps.jodatime
-  compile deps.mosby
-  compile deps.stetho
+  implementation deps.appCompat
+  implementation deps.design
+  implementation deps.cardView
+  implementation deps.annotations
+  implementation deps.kotlinStdlib
+  implementation deps.timberkt
+  implementation deps.glide
+  implementation deps.flexadapter
+  implementation deps.jodatime
+  implementation deps.mosby
+  implementation deps.stetho
 
-  compile deps.conductor
-  compile deps.conductorSupport
+  implementation deps.conductor
+  implementation deps.conductorSupport
 
-  compile deps.moshi
-  compile deps.moshiKotlin
+  implementation deps.moshi
+  implementation deps.moshiKotlin
 
-  compile deps.okhttp
-  compile deps.okhttpLogInterceptor
+  implementation deps.okhttp
+  implementation deps.okhttpLogInterceptor
 
-  compile deps.retrofit
-  compile deps.retrofitRxAdapter
-  compile deps.retrofitScalarsConverter
-  compile deps.retrofitMoshiConverter
+  implementation deps.retrofit
+  implementation deps.retrofitRxAdapter
+  implementation deps.retrofitScalarsConverter
+  implementation deps.retrofitMoshiConverter
 
-  compile deps.rxJava
-  compile deps.rxAndroid
-  compile deps.rxRelay
-  compile deps.rxBinding
+  implementation deps.rxJava
+  implementation deps.rxAndroid
+  implementation deps.rxRelay
+  implementation deps.rxBinding
 }
 
 repositories {
