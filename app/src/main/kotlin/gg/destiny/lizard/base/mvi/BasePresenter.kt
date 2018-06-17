@@ -7,9 +7,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 
 abstract class BasePresenter<V : BaseView<VM>, VM> : MviBasePresenter<V, VM>() {
   override fun bindIntents() {
-    subscribeViewState(
-        bindIntents(AndroidSchedulers.mainThread()),
-        { view, model -> view.render(model) })
+    subscribeViewState(bindIntents(AndroidSchedulers.mainThread())) { view, model ->
+      view.render(model)
+    }
   }
 
   abstract fun bindIntents(scheduler: Scheduler): Observable<VM>
