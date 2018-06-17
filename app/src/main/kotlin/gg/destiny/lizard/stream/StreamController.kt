@@ -233,10 +233,16 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
       chatAdapter.items.add(message)
     }
 
-    if (autoScroll) {
-      chatRecyclerView.post({ chatRecyclerView.scrollToPosition(chatAdapter.items.lastIndex) })
+    if (autoScroll || lockAutoScroll) {
+      lockAutoScroll = true
+      chatRecyclerView.post({
+        chatRecyclerView.scrollToPosition(chatAdapter.items.lastIndex)
+        lockAutoScroll = false
+      })
     }
   }
+
+  private var lockAutoScroll = false
 
   private fun updateChatUserCount(count: Int) {
     view?.stream_chat_count?.text = "$count"
