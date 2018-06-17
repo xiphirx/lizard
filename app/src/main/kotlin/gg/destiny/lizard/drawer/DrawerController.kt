@@ -1,6 +1,8 @@
 package gg.destiny.lizard.drawer
 
 import android.app.Dialog
+import android.support.annotation.DrawableRes
+import android.support.annotation.StringRes
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -17,10 +19,15 @@ import gg.destiny.lizard.account.AccountInfo
 import gg.destiny.lizard.account.AccountSubscriptionTier
 import gg.destiny.lizard.base.controller.BaseController
 import gg.destiny.lizard.base.mvi.BaseView
+import gg.destiny.lizard.navigation.Navigator
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.item_account_info.view.account_info_name
 import kotlinx.android.synthetic.main.item_account_info.view.account_info_subscription_tier
+import kotlinx.android.synthetic.main.item_drawer_icon_text.view.icon_text_icon
+import kotlinx.android.synthetic.main.item_drawer_icon_text.view.icon_text_text
 import kotlinx.android.synthetic.main.item_login_nag.view.login_google
 import kotlinx.android.synthetic.main.item_login_nag.view.login_nag_flipper
 import kotlinx.android.synthetic.main.item_login_nag.view.login_reddit
@@ -37,6 +44,13 @@ interface DrawerView : BaseView<DrawerModel> {
 
 data class LoginNag(var showLoading: Boolean = false)
 
+data class DrawerItem(
+    @DrawableRes val icon: Int,
+    @StringRes val title: Int,
+    val clicksSubscriber: Consumer<Any>,
+    var clicksDisposable: Disposable? = null
+)
+
 class DrawerController : BaseController<DrawerView, DrawerModel, DrawerPresenter>(), DrawerView {
   override val twitchLoginClicks: Relay<Any> = PublishRelay.create()
   override val redditLoginClicks: Relay<Any> = PublishRelay.create()
@@ -48,6 +62,11 @@ class DrawerController : BaseController<DrawerView, DrawerModel, DrawerPresenter
   private val redirectListener = { url: String -> oauthRedirectUrl.accept(url) }
   private var loginDialog: Dialog? = null
   private val loginNag = LoginNag()
+
+  private val settingsItem = DrawerItem(
+      R.drawable.ic_settings_black_24dp,
+      R.string.drawer_settings_title,
+      Consumer { navigator?.navigateToSettings() })
 
   private val drawerAdapter = FlexAdapter<Any>().apply {
     register<AccountInfo>(R.layout.item_account_info) { info, view, _ ->
@@ -72,7 +91,18 @@ class DrawerController : BaseController<DrawerView, DrawerModel, DrawerPresenter
           RxView.clicks(view.login_google).subscribe(googleLoginClicks),
           RxView.clicks(view.login_twitter).subscribe(twitterLoginClicks))
     }
+
+    register<DrawerItem>(R.layout.item_drawer_icon_text) { drawerItem, view, _ ->
+      view.apply {
+        icon_text_icon.setImageResource(drawerItem.icon)
+        icon_text_text.setText(drawerItem.title)
+      }
+      drawerItem.clicksDisposable?.dispose()
+      drawerItem.clicksDisposable = RxView.clicks(view).subscribe(drawerItem.clicksSubscriber)
+    }
   }
+
+  var navigator: Navigator? = null
 
   override fun createPresenter() = DrawerPresenter()
 
@@ -91,6 +121,8 @@ class DrawerController : BaseController<DrawerView, DrawerModel, DrawerPresenter
       is LoginStatus.Error -> showLoginError(model.loginStatus.error)
       is LoginStatus.LoggedIn -> showAccountInfo(model.loginStatus.accountInfo)
     }
+
+    appendStaticItems()
   }
 
   private fun requestLogin(authorizeUrl: String, redirectSlug: String) {
@@ -143,6 +175,12 @@ class DrawerController : BaseController<DrawerView, DrawerModel, DrawerPresenter
           }
         }
         .show()
+  }
+
+  private fun appendStaticItems() {
+    if (drawerAdapter.items.lastOrNull() !is DrawerItem){
+      drawerAdapter.items.add(settingsItem)
+    }
   }
 
   private fun <E> MutableList<E>.setFirst(item: E) {

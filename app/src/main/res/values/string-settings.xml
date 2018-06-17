@@ -1,0 +1,5 @@
+<resources>
+  <string name="settings.toolbar_title">Settings</string>
+  <string name="settings.version_text">Version %1$s</string>
+  <string name="settings.dark_mode.title">Dark mode</string>
+</resources>
