@@ -2,7 +2,6 @@ package gg.destiny.lizard
 
 import android.app.Application
 import android.os.StrictMode
-import com.facebook.stetho.Stetho
 import com.github.ajalt.timberkt.d
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -43,9 +42,6 @@ class App : Application() {
 //    }
 
     JodaTimeAndroid.init(this)
-    if (BuildConfig.DEBUG) {
-      Stetho.initializeWithDefaults(this)
-    }
 
     EmoteDrawable.density = resources.displayMetrics.density
   }
