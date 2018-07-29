@@ -75,7 +75,7 @@ class Chat(
     socket.disconnect()
   }
 
-  fun chatMessages() = socket.messages()
+  fun messages() = socket.messages()
 
   fun sendMessage(message: String) {
     socket.sendMessage(message)

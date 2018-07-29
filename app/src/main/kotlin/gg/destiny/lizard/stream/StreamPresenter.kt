@@ -34,10 +34,10 @@ class StreamPresenter(
                   StreamStatus.Online(
                       title = stream.channel.status,
                       viewerCount = stream.viewers,
-                      chatMessages = chat.chatMessages(),
+                      chatMessages = chat.messages(),
                       url = "https://player.twitch.tv/?channel=$streamKey&html5")
                 } else {
-                  StreamStatus.Offline(chat.chatMessages())
+                  StreamStatus.Offline(chat.messages())
                 }
               }
               .startWith(StreamStatus.Loading)
