@@ -48,7 +48,7 @@ class StreamPresenter(
         .map { ChatParticipationStatus.Online(it) }
         .subscribeOn(Schedulers.io())
 
-    val chatGuiUpdate = intent { Observable.just(true) }
+    intent { Observable.just(true) }
         .doOnNext { chat.updateGuiPackageInfo() }
         .subscribeOn(Schedulers.io())
         .subscribe()
