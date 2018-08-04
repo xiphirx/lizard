@@ -10,7 +10,7 @@ import gg.destiny.lizard.core.chat.Emote
 import gg.destiny.lizard.core.logging.L
 import java.io.File
 
-class AppChatStorage(
+class SharedPreferencesChatStorage(
     private val preferences: SharedPreferences =
         App.INSTANCE.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE),
     private val storageDirectory: File = App.INSTANCE.getDir(PREF_NAME, Context.MODE_PRIVATE),

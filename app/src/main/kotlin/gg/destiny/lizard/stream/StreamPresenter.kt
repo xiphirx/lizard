@@ -5,7 +5,7 @@ import gg.destiny.lizard.account.AccountCookieJar
 import gg.destiny.lizard.account.AccountManager
 import gg.destiny.lizard.api.TwitchTvApi
 import gg.destiny.lizard.base.mvi.BasePresenter
-import gg.destiny.lizard.chat.AppChatStorage
+import gg.destiny.lizard.chat.SharedPreferencesChatStorage
 import gg.destiny.lizard.core.chat.Chat
 import gg.destiny.lizard.core.chat.ChatGuiApi
 import gg.destiny.lizard.core.chat.ChatGuiPackage
@@ -21,7 +21,7 @@ class StreamPresenter(
         socket = ChatSocket(
             okHttpClient = App.okHttp, moshi = App.moshi, cookieJar = AccountCookieJar()),
         guiApi = ChatGuiApi(okHttpClient = App.okHttp, moshi = App.moshi),
-        storage = AppChatStorage()),
+        storage = SharedPreferencesChatStorage()),
     private val accountManager: AccountManager = AccountManager()
 ) : BasePresenter<StreamView, StreamModel>() {
   override fun bindIntents(scheduler: Scheduler): Observable<StreamModel> {
