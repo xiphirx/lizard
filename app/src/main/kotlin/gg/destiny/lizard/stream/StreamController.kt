@@ -31,14 +31,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.controller_stream.view.stream_chat_count
-import kotlinx.android.synthetic.main.controller_stream.view.stream_chat_edit_text
-import kotlinx.android.synthetic.main.controller_stream.view.stream_chat_offline_message
-import kotlinx.android.synthetic.main.controller_stream.view.stream_chat_recycler_view
-import kotlinx.android.synthetic.main.controller_stream.view.stream_chat_text_input_layout
-import kotlinx.android.synthetic.main.controller_stream.view.stream_video_container
-import kotlinx.android.synthetic.main.controller_stream.view.stream_viewer_num
-import kotlinx.android.synthetic.main.controller_stream.view.stream_web_view
+import kotlinx.android.synthetic.main.controller_stream.view.*
 
 interface StreamView : BaseView<StreamModel> {
   val authoredChatMessages: Observable<String>
@@ -105,7 +98,8 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
         layout.stream_video_container.visibility = View.VISIBLE
         layout.stream_viewer_num.text = "${model.streamStatus.viewerCount}"
         registerChatObservable(model.streamStatus.chatMessages)
-        setupStream(model.streamStatus.url)
+//        setupStream(model.streamStatus.url)
+        setupStream(null)
       }
       is StreamStatus.Offline -> {
         layout.stream_video_container.visibility = View.GONE
