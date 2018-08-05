@@ -36,6 +36,7 @@ class ChatSocket(
         "QUIT" -> Quit::class
         "JOIN" -> Join::class
         "ERR" -> Error::class
+        "BROADCAST" -> Broadcast::class
         else -> Unknown::class
       }
     }
@@ -61,6 +62,11 @@ class ChatSocket(
         @Json(name = "nick") val nick: String,
         @Json(name = "features") val features: List<String>,
         @Json(name = "timestamp") val timestamp: Long
+    ) : Message()
+
+    data class Broadcast(
+        @Json(name = "timestamp") val timestamp: Long,
+        @Json(name = "data") val data: String
     ) : Message()
 
     data class Error(val message: String) : Message() {
@@ -104,6 +110,7 @@ class ChatSocket(
     super.onMessage(webSocket, message)
     val type = Message.of(message.substringBefore(" ", UNKNOWN_TYPE))
     val data = message.substringAfter(' ')
+    L { "Message: $message" }
     relay.accept(moshi.adapter(type.java).fromJson(data)!!)
   }
 
