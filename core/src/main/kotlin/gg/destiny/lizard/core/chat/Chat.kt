@@ -32,12 +32,14 @@ class Chat(
       updateDisposable = Observable.zip(
           chatGuiPackageRelay,
           guiApi.getPackageInfo(),
-          BiFunction<ChatGuiPackage, ChatGuiApi.PackageInfo, Pair<String, String>> {
-            t1, t2 ->  t1.version to t2.version
+          BiFunction<ChatGuiPackage, ChatGuiApi.PackageInfo, Pair<ChatGuiPackage, String>> {
+            t1, t2 ->  t1 to t2.version
           })
           .subscribeOn(Schedulers.io())
           .observeOn(Schedulers.io())
-          .filter { (currentVersion, newVersion) -> currentVersion != newVersion }
+          .filter { (currentPackage, newVersion) ->
+            currentPackage.emoteMap.isEmpty() || currentPackage.version != newVersion
+          }
           .flatMap({ guiApi.getEmoteList() }, { (_, version), emotes -> version to emotes })
           .flatMap({ downloadEmoteTexture(it.first) }, { emotes, texture -> emotes to texture })
           .map { (emoteList, texturePath) ->
