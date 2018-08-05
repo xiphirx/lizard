@@ -37,6 +37,8 @@ class ChatSocket(
         "JOIN" -> Join::class
         "ERR" -> Error::class
         "BROADCAST" -> Broadcast::class
+        "MUTE" -> Mute::class
+        "BAN" -> Ban::class
         else -> Unknown::class
       }
     }
@@ -62,6 +64,20 @@ class ChatSocket(
         @Json(name = "nick") val nick: String,
         @Json(name = "features") val features: List<String>,
         @Json(name = "timestamp") val timestamp: Long
+    ) : Message()
+
+    data class Mute(
+        @Json(name = "nick") val nick: String,
+        @Json(name = "features") val features: List<String>,
+        @Json(name = "timestamp") val timestamp: Long,
+        @Json(name = "data") val data: String
+    ) : Message()
+
+    data class Ban(
+        @Json(name = "nick") val nick: String,
+        @Json(name = "features") val features: List<String>,
+        @Json(name = "timestamp") val timestamp: Long,
+        @Json(name = "data") val data: String
     ) : Message()
 
     data class Broadcast(
