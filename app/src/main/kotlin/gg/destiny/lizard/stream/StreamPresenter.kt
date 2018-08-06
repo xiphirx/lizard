@@ -22,7 +22,7 @@ class StreamPresenter(
             okHttpClient = App.okHttp, moshi = App.moshi, cookieJar = AccountCookieJar()),
         guiApi = ChatGuiApi(okHttpClient = App.okHttp, moshi = App.moshi),
         storage = SharedPreferencesChatStorage()),
-    private val accountManager: AccountManager = AccountManager()
+    private val accountManager: AccountManager = App.accountManager
 ) : BasePresenter<StreamView, StreamModel>() {
   override fun bindIntents(scheduler: Scheduler): Observable<StreamModel> {
     val streamInformation = intent { Observable.just(true) }

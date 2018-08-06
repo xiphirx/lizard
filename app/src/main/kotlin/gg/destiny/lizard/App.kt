@@ -7,6 +7,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import gg.destiny.lizard.account.AccountCookieJar
 import gg.destiny.lizard.account.AccountInfoStorage
+import gg.destiny.lizard.account.AccountManager
 import gg.destiny.lizard.api.TwitchTvApi
 import gg.destiny.lizard.chat.EmoteDrawable
 import gg.destiny.lizard.core.logging.Logger
@@ -20,6 +21,7 @@ class App : Application() {
     val okHttp by lazy { OkHttpClient() }
     val accountInfoStorage by lazy { AccountInfoStorage() }
     val accountCookieJar by lazy { AccountCookieJar() }
+    val accountManager by lazy { AccountManager() }
     val twitchTv by lazy { TwitchTvApi(okHttp, moshi) }
     val moshi: Moshi by lazy { Moshi.Builder().add(KotlinJsonAdapterFactory()).build() }
   }
