@@ -7,7 +7,7 @@ import gg.destiny.lizard.App
 
 class AccountInfoStorage(
     private val preferences: SharedPreferences =
-       App.INSTANCE.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE),
+        App.get().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE),
     moshi: Moshi = App.moshi
 ) {
   companion object {

@@ -8,7 +8,7 @@ import gg.destiny.lizard.core.settings.SettingSpec
 
 class SettingsStorage(
     private val preferences: SharedPreferences =
-        App.INSTANCE.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        App.get().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 ) {
   companion object {
     private const val PREF_NAME = "app_settings"

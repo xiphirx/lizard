@@ -12,8 +12,8 @@ import java.io.File
 
 class SharedPreferencesChatStorage(
     private val preferences: SharedPreferences =
-        App.INSTANCE.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE),
-    private val storageDirectory: File = App.INSTANCE.getDir(PREF_NAME, Context.MODE_PRIVATE),
+        App.get().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE),
+    private val storageDirectory: File = App.get().getDir(PREF_NAME, Context.MODE_PRIVATE),
     moshi: Moshi = App.moshi
 ) : ChatStorage {
   companion object {

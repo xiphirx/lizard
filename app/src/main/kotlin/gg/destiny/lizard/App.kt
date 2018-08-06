@@ -16,19 +16,26 @@ import okhttp3.OkHttpClient
 import timber.log.Timber
 
 class App : Application() {
+  init {
+    INSTANCE = this
+  }
+
   companion object {
-    lateinit var INSTANCE: App
+    private lateinit var INSTANCE: App
     val okHttp by lazy { OkHttpClient() }
     val accountInfoStorage by lazy { AccountInfoStorage() }
     val accountCookieJar by lazy { AccountCookieJar() }
     val accountManager by lazy { AccountManager() }
     val twitchTv by lazy { TwitchTvApi(okHttp, moshi) }
     val moshi: Moshi by lazy { Moshi.Builder().add(KotlinJsonAdapterFactory()).build() }
+
+    fun get(): App {
+      return INSTANCE
+    }
   }
 
   override fun onCreate() {
     super.onCreate()
-    INSTANCE = this
     if (BuildConfig.DEBUG) {
       StrictMode.enableDefaults()
       Timber.plant(Timber.DebugTree())

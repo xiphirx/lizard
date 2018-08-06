@@ -47,7 +47,7 @@ data class SerializableCookie(
 class AccountCookieJar(
     moshi: Moshi = App.moshi,
     private val preferences: SharedPreferences =
-      App.INSTANCE.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE),
+      App.get().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE),
     private val hostFilter: (String) -> Boolean = { true }
 ) : CookieJar {
   companion object {
