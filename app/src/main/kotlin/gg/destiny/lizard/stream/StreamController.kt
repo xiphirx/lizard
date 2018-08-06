@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory
 import android.support.annotation.StringRes
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE
 import android.util.DisplayMetrics
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -50,6 +51,7 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
   private var textureLoadingDisposable: Disposable? = null
   private var chatGuiPackage: ChatGuiPackage = emptyPackage
   private var highlightNick: String? = null
+  private var lockAutoScroll = true
   private lateinit var chatRecyclerView: RecyclerView
   private lateinit var chatLayoutManager: LinearLayoutManager
 
@@ -63,6 +65,21 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
         itemAnimator = null
         adapter = chatAdapter
         layoutManager = chatLayoutManager
+        addOnScrollListener(object : RecyclerView.OnScrollListener() {
+          override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+            super.onScrollStateChanged(recyclerView, newState)
+            lockAutoScroll = when (newState) {
+              SCROLL_STATE_IDLE -> !chatRecyclerView.canScrollVertically(1)
+              else -> false
+            }
+          }
+        })
+        viewTreeObserver.addOnPreDrawListener {
+          if (lockAutoScroll) {
+            chatRecyclerView.scrollToPosition(chatAdapter.items.lastIndex)
+          }
+          true
+        }
       }
 
       with(stream_web_view.settings) {
@@ -196,9 +213,6 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
   }
 
   private fun handleUserChatMessage(message: ChatSocket.Message.UserMessage) {
-    val lastVisibleIndex = chatLayoutManager.findLastCompletelyVisibleItemPosition()
-    val lastDataIndex = chatAdapter.items.lastIndex
-    val autoScroll = lastVisibleIndex == -1 || lastVisibleIndex == lastDataIndex
     val lastMessage = chatAdapter.items.lastOrNull()
     val trimmedMessage = message.data.trim()
     val comboIndex = chatAdapter.items.lastIndex
@@ -226,17 +240,7 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
     } else {
       chatAdapter.items.add(message)
     }
-
-    if (autoScroll || lockAutoScroll) {
-      lockAutoScroll = true
-      chatRecyclerView.post({
-        chatRecyclerView.scrollToPosition(chatAdapter.items.lastIndex)
-        lockAutoScroll = false
-      })
-    }
   }
-
-  private var lockAutoScroll = false
 
   private fun updateChatUserCount(count: Int) {
     view?.stream_chat_count?.text = "$count"
