@@ -10,6 +10,7 @@
     android:focusable="true">
 
   <TextView
+      style="@style/TextAppearance.AppCompat.Body1"
       android:id="@+id/settings.item_boolean.title"
       android:layout_width="0dp"
       android:layout_height="wrap_content"

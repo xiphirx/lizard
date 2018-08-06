@@ -14,4 +14,12 @@ enum class BooleanSetting : SettingSpec<Boolean> {
   }
 }
 
+enum class StaticTextSetting : SettingSpec<String> {
+  VERSION {
+    override val key = "version"
+    override var value = ""
+    override var defaultValue = ""
+  }
+}
+
 data class SettingsModel(val settings: List<SettingSpec<out Any>> = emptyList())

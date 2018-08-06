@@ -1,13 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/settings.item_static_text.text"
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+
+  <TextView
+    style="@style/TextAppearance.AppCompat.Body1"
+    android:id="@+id/settings.item_static_text.title"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
     android:paddingTop="12dp"
+    tools:text="This is some static text"
+    />
+
+  <TextView
+    style="@style/TextAppearance.AppCompat.Caption"
+    android:id="@+id/settings.item_static_text.subtitle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
     android:paddingBottom="12dp"
     tools:text="This is some static text"
     />
+
+</LinearLayout>

@@ -3,8 +3,10 @@ package gg.destiny.lizard.settings
 import android.content.Context
 import android.content.SharedPreferences
 import gg.destiny.lizard.App
+import gg.destiny.lizard.BuildConfig
 import gg.destiny.lizard.core.settings.BooleanSetting
 import gg.destiny.lizard.core.settings.SettingSpec
+import gg.destiny.lizard.core.settings.StaticTextSetting
 
 class SettingsStorage(
     private val preferences: SharedPreferences =
@@ -15,7 +17,8 @@ class SettingsStorage(
   }
 
   fun loadExistingSettings(): List<SettingSpec<out Any>> = listOf(
-      BooleanSetting.DARK_MODE.load(preferences)
+      BooleanSetting.DARK_MODE.load(preferences),
+      StaticTextSetting.VERSION.apply { value = BuildConfig.VERSION_NAME }
   )
 
   fun updateBooleanSetting(setting: SettingSpec<Boolean>) {
