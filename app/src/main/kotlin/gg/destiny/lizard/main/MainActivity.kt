@@ -47,6 +47,8 @@ class MainActivity : BaseActivity(), Navigator {
 
   override fun navigateToSettings() {
     drawer_layout.closeDrawers()
-    streamRouter.pushController(RouterTransaction.with(SettingsController()))
+    if (streamRouter.backstack.last().controller() !is SettingsController) {
+      streamRouter.pushController(RouterTransaction.with(SettingsController()))
+    }
   }
 }
