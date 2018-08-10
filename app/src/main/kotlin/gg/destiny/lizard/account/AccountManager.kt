@@ -3,9 +3,8 @@ package gg.destiny.lizard.account
 import com.jakewharton.rxrelay2.BehaviorRelay
 import gg.destiny.lizard.core.api.DestinyApi
 import io.reactivex.Observable
-import javax.inject.Inject
 
-class AccountManager @Inject constructor(
+class AccountManager(
     private val destinyApi: DestinyApi,
     private val accountInfoStorage: AccountInfoStorage
 ) {

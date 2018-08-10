@@ -7,7 +7,10 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import gg.destiny.lizard.account.AccountCookieJar
+import gg.destiny.lizard.account.AccountInfoStorage
+import gg.destiny.lizard.account.AccountManager
 import gg.destiny.lizard.chat.SharedPreferencesChatStorage
+import gg.destiny.lizard.core.api.DestinyApi
 import gg.destiny.lizard.core.chat.ChatStorage
 import okhttp3.CookieJar
 import java.io.File
@@ -54,6 +57,14 @@ class AppModule(private val application: App) {
     return SharedPreferencesChatStorage(preferences, directory, moshi)
   }
 
+  @Provides
+  @Singleton
+  fun provideAccountManager(
+      destinyApi: DestinyApi,
+      accountInfoStorage: AccountInfoStorage
+  ): AccountManager {
+    return AccountManager(destinyApi, accountInfoStorage)
+  }
 
   @Provides
   @Singleton
