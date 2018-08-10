@@ -1,7 +1,6 @@
-package gg.destiny.lizard.api
+package gg.destiny.lizard.core.api
 
 import com.squareup.moshi.Moshi
-import gg.destiny.lizard.BuildConfig
 import io.reactivex.Observable
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -10,18 +9,25 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Headers
+import retrofit2.http.Header
 import retrofit2.http.Path
+import javax.inject.Named
 
-class TwitchTvApi(okHttp: OkHttpClient, moshi: Moshi) {
+class TwitchTvApi(
+    @Named("twitch-client-id") private val clientId: String,
+    okHttp: OkHttpClient,
+    moshi: Moshi
+) {
   companion object {
     const val BASE_URL = "https://api.twitch.tv"
   }
 
   private interface Endpoints {
-    @Headers("Client-ID: ${BuildConfig.TWITCH_CLIENT_ID}")
     @GET("kraken/streams/{streamId}")
-    fun getStreamInformation(@Path("streamId") streamId: String): Observable<StreamInformation>
+    fun getStreamInformation(
+        @Header("Client-ID") clientId: String,
+        @Path("streamId") streamId: String
+    ): Observable<StreamInformation>
   }
 
   private val endpoints: Endpoints
@@ -40,7 +46,7 @@ class TwitchTvApi(okHttp: OkHttpClient, moshi: Moshi) {
     endpoints = retrofit.create(Endpoints::class.java)
   }
 
-  fun getStreamInformation(channelId: String) = endpoints.getStreamInformation(channelId)
+  fun getStreamInformation(channelId: String) = endpoints.getStreamInformation(clientId, channelId)
 }
 
 data class StreamInformation(val stream: Stream?)

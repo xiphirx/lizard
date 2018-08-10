@@ -2,7 +2,7 @@ package gg.destiny.lizard.drawer
 
 import gg.destiny.lizard.account.AccountInfo
 import gg.destiny.lizard.account.AccountManager
-import gg.destiny.lizard.api.DestinyApi
+import gg.destiny.lizard.core.api.DestinyApi
 import gg.destiny.lizard.base.mvi.BasePresenter
 import io.reactivex.Observable
 import io.reactivex.Scheduler

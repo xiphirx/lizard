@@ -2,7 +2,7 @@ package gg.destiny.lizard.account
 
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
-import gg.destiny.lizard.api.SessionInformation
+import gg.destiny.lizard.core.api.SessionInformation
 import gg.destiny.lizard.core.logging.L
 
 enum class AccountSubscriptionTier {

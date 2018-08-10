@@ -1,7 +1,7 @@
 package gg.destiny.lizard.stream
 
 import gg.destiny.lizard.account.AccountManager
-import gg.destiny.lizard.api.TwitchTvApi
+import gg.destiny.lizard.core.api.TwitchTvApi
 import gg.destiny.lizard.base.mvi.BasePresenter
 import gg.destiny.lizard.core.chat.Chat
 import gg.destiny.lizard.core.chat.ChatGuiPackage

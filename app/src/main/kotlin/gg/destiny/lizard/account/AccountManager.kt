@@ -1,7 +1,7 @@
 package gg.destiny.lizard.account
 
 import com.jakewharton.rxrelay2.BehaviorRelay
-import gg.destiny.lizard.api.DestinyApi
+import gg.destiny.lizard.core.api.DestinyApi
 import io.reactivex.Observable
 import javax.inject.Inject
 

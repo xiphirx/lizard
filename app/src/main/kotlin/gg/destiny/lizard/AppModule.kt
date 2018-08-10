@@ -7,12 +7,9 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import gg.destiny.lizard.account.AccountCookieJar
-import gg.destiny.lizard.api.DestinyApi
-import gg.destiny.lizard.api.TwitchTvApi
 import gg.destiny.lizard.chat.SharedPreferencesChatStorage
 import gg.destiny.lizard.core.chat.ChatStorage
 import okhttp3.CookieJar
-import okhttp3.OkHttpClient
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -20,19 +17,15 @@ import javax.inject.Singleton
 @Module
 class AppModule(private val application: App) {
   @Provides
-  @Singleton
-  fun provideTwitchTvApi(okHttpClient: OkHttpClient, moshi: Moshi): TwitchTvApi {
-    return TwitchTvApi(okHttpClient, moshi)
+  @Named("debug-flag")
+  fun providesDebugFlag(): Boolean {
+    return BuildConfig.DEBUG
   }
 
   @Provides
-  @Singleton
-  fun provideDestinyApi(
-      okHttpClient: OkHttpClient,
-      cookieJar: CookieJar,
-      moshi: Moshi
-  ): DestinyApi {
-    return DestinyApi(okHttpClient, cookieJar, moshi)
+  @Named("twitch-client-id")
+  fun provideTwitchClientId(): String {
+    return BuildConfig.TWITCH_CLIENT_ID
   }
 
   @Provides

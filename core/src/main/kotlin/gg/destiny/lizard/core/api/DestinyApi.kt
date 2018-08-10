@@ -1,9 +1,7 @@
-package gg.destiny.lizard.api
+package gg.destiny.lizard.core.api
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.Moshi
-import gg.destiny.lizard.App
-import gg.destiny.lizard.BuildConfig
 import io.reactivex.Observable
 import okhttp3.CookieJar
 import okhttp3.OkHttpClient
@@ -18,8 +16,15 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Url
+import javax.inject.Inject
+import javax.inject.Named
 
-class DestinyApi(okHttpClient: OkHttpClient, cookieJar: CookieJar, moshi: Moshi) {
+class DestinyApi @Inject constructor(
+    okHttpClient: OkHttpClient,
+    cookieJar: CookieJar,
+    moshi: Moshi,
+    @Named("debug-flag") private val isDebug: Boolean
+) {
   companion object {
     const val HOST = "www.destiny.gg"
     const val BASE_URL = "https://$HOST"
@@ -58,7 +63,7 @@ class DestinyApi(okHttpClient: OkHttpClient, cookieJar: CookieJar, moshi: Moshi)
         .followRedirects(true)
         .cookieJar(cookieJar)
         .apply {
-          if (BuildConfig.DEBUG) {
+          if (isDebug) {
             addInterceptor(
                 HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
           }
