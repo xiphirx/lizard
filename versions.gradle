@@ -15,7 +15,7 @@ ext {
   final supportLibraryVersion = '27.1.1'
   final okhttpVersion = '3.10.0'
   final retrofitVersion = '2.4.0'
-  final conductorVersion = '2.1.4'
+  final conductorVersion = '2.1.5'
   final moshiVersion = '1.6.0'
   final rxBindingVersion = '2.1.1'
   final daggerVersion = '2.17'
