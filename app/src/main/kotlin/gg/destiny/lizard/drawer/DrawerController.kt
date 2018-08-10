@@ -14,6 +14,7 @@ import com.github.ajalt.flexadapter.register
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxrelay2.PublishRelay
 import com.jakewharton.rxrelay2.Relay
+import gg.destiny.lizard.App
 import gg.destiny.lizard.R
 import gg.destiny.lizard.account.AccountInfo
 import gg.destiny.lizard.account.AccountSubscriptionTier
@@ -68,6 +69,10 @@ class DrawerController : BaseController<DrawerView, DrawerModel, DrawerPresenter
       R.string.drawer_settings_title,
       Consumer { navigator?.navigateToSettings() })
 
+  init {
+    App.get().appComponent.inject(this)
+  }
+
   private val drawerAdapter = FlexAdapter<Any>().apply {
     register<AccountInfo>(R.layout.item_account_info) { info, view, _ ->
       with(view) {
@@ -103,8 +108,6 @@ class DrawerController : BaseController<DrawerView, DrawerModel, DrawerPresenter
   }
 
   var navigator: Navigator? = null
-
-  override fun createPresenter() = DrawerPresenter()
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View =
       RecyclerView(container.context).apply {

@@ -9,13 +9,15 @@ import gg.destiny.lizard.base.mvi.BaseView
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
-abstract class BaseController<V : MvpView, VS, out P : MviBasePresenter<V, VS>>
+abstract class BaseController<V : MvpView, VS, P : MviBasePresenter<V, VS>>
   : Controller, BaseView<VS> {
   constructor() : super()
   constructor(arguments: Bundle) : super(arguments)
 
-  protected val presenter: P by lazy { createPresenter() }
+  @Inject
+  lateinit var presenter: P
   protected val layout
     get() = view ?: throw IllegalStateException("Accessing layout before its ready")
 
@@ -30,8 +32,6 @@ abstract class BaseController<V : MvpView, VS, out P : MviBasePresenter<V, VS>>
     super.onDetach(view)
     presenter.detachView(!(isBeingDestroyed || isDestroyed))
   }
-
-  abstract fun createPresenter(): P
 
   override fun firstLoad(): Observable<Unit> = Observable.just(Unit)
 

@@ -1,17 +1,15 @@
 package gg.destiny.lizard.account
 
-import android.content.Context
 import android.content.SharedPreferences
 import com.squareup.moshi.Moshi
-import gg.destiny.lizard.App
+import javax.inject.Inject
+import javax.inject.Named
 
-class AccountInfoStorage(
-    private val preferences: SharedPreferences =
-        App.get().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE),
-    moshi: Moshi = App.moshi
+class AccountInfoStorage @Inject constructor(
+    @Named("account-info") private val preferences: SharedPreferences,
+    moshi: Moshi
 ) {
   companion object {
-    const val PREF_NAME = "account_storage"
     const val KEY_ACCOUNT_INFO = "account-info"
 
     const val MISSING = "missing"

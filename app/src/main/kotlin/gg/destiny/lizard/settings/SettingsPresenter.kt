@@ -5,9 +5,10 @@ import gg.destiny.lizard.core.settings.SettingSpec
 import gg.destiny.lizard.core.settings.SettingsModel
 import io.reactivex.Observable
 import io.reactivex.Scheduler
+import javax.inject.Inject
 
-class SettingsPresenter(
-    private val settingsStorage: SettingsStorage = SettingsStorage()
+class SettingsPresenter @Inject constructor(
+    private val settingsStorage: SettingsStorage
 ) : BasePresenter<SettingsView, SettingsModel>() {
   override fun bindIntents(scheduler: Scheduler): Observable<SettingsModel> {
     val firstLoad = intent { it.firstLoad() }

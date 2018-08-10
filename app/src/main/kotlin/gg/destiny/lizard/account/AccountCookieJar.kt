@@ -1,10 +1,8 @@
 package gg.destiny.lizard.account
 
-import android.content.Context
 import android.content.SharedPreferences
 import com.squareup.moshi.Json
 import com.squareup.moshi.Moshi
-import gg.destiny.lizard.App
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
@@ -45,13 +43,11 @@ data class SerializableCookie(
 }
 
 class AccountCookieJar(
-    moshi: Moshi = App.moshi,
-    private val preferences: SharedPreferences =
-      App.get().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE),
+    moshi: Moshi,
+    private val preferences: SharedPreferences,
     private val hostFilter: (String) -> Boolean = { true }
 ) : CookieJar {
   companion object {
-    const val PREF_NAME = "cookie_jar"
     const val COOKIES_KEY = "cookies"
   }
 

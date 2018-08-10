@@ -18,6 +18,7 @@ import com.github.ajalt.timberkt.d
 import com.github.ajalt.timberkt.e
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.jakewharton.rxrelay2.PublishRelay
+import gg.destiny.lizard.App
 import gg.destiny.lizard.R
 import gg.destiny.lizard.base.controller.BaseController
 import gg.destiny.lizard.base.mvi.BaseView
@@ -39,6 +40,10 @@ interface StreamView : BaseView<StreamModel> {
 }
 
 class StreamController : BaseController<StreamView, StreamModel, StreamPresenter>(), StreamView {
+  init {
+    App.get().appComponent.inject(this)
+  }
+
   private var chatMessageHash: Int = 0
   private var chatMessageSubscription: Disposable? = null
   private var chatUserCount: Int = 0
@@ -54,8 +59,6 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
   private var lockAutoScroll = true
   private lateinit var chatRecyclerView: RecyclerView
   private lateinit var chatLayoutManager: LinearLayoutManager
-
-  override fun createPresenter() = StreamPresenter()
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
     return inflater.inflate(R.layout.controller_stream, container, false).apply {

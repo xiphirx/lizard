@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
   compileSdkVersion versions.compileSdk
@@ -63,6 +64,9 @@ dependencies {
   implementation deps.flexadapter
   implementation deps.jodatime
   implementation deps.mosby
+
+  implementation deps.dagger
+  kapt deps.daggerCompiler
 
   implementation deps.conductor
   implementation deps.conductorSupport

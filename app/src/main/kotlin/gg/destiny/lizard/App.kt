@@ -10,7 +10,9 @@ import gg.destiny.lizard.account.AccountInfoStorage
 import gg.destiny.lizard.account.AccountManager
 import gg.destiny.lizard.api.TwitchTvApi
 import gg.destiny.lizard.chat.EmoteDrawable
+import gg.destiny.lizard.core.chat.ChatModule
 import gg.destiny.lizard.core.logging.Logger
+import gg.destiny.lizard.core.network.NetworkModule
 import net.danlew.android.joda.JodaTimeAndroid
 import okhttp3.OkHttpClient
 import timber.log.Timber
@@ -22,11 +24,6 @@ class App : Application() {
 
   companion object {
     private lateinit var INSTANCE: App
-    val okHttp by lazy { OkHttpClient() }
-    val accountInfoStorage by lazy { AccountInfoStorage() }
-    val accountCookieJar by lazy { AccountCookieJar() }
-    val accountManager by lazy { AccountManager() }
-    val twitchTv by lazy { TwitchTvApi(okHttp, moshi) }
     val moshi: Moshi by lazy { Moshi.Builder().add(KotlinJsonAdapterFactory()).build() }
 
     fun get(): App {
@@ -34,8 +31,16 @@ class App : Application() {
     }
   }
 
+  lateinit var appComponent: AppComponent
+
   override fun onCreate() {
     super.onCreate()
+    appComponent = DaggerAppComponent.builder()
+        .appModule(AppModule(this))
+        .chatModule(ChatModule())
+        .networkModule(NetworkModule())
+        .build()
+    
     if (BuildConfig.DEBUG) {
       StrictMode.enableDefaults()
       Timber.plant(Timber.DebugTree())

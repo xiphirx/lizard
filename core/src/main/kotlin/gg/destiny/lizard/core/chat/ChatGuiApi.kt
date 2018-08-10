@@ -11,9 +11,8 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
 import java.util.regex.Pattern
 
-class ChatGuiApi(baseUrl: String = BASE_URL, okHttpClient: OkHttpClient, moshi: Moshi) {
+class ChatGuiApi(baseUrl: String, okHttpClient: OkHttpClient, moshi: Moshi) {
   companion object {
-    private const val BASE_URL = "https://raw.githubusercontent.com/destinygg/chat-gui/master/"
     private val PATTERN_EMOTE_BLOCK =
         Pattern.compile(
             "\\.chat-emote\\.chat-emote-([A-Za-z0-9]*)\\s*\\{([a-zA-Z:;0-9\\s\\-]*)\\}",

@@ -17,14 +17,12 @@ import okhttp3.WebSocketListener
 import kotlin.reflect.KClass
 
 class ChatSocket(
-    private val endpoint: String = DGG_ENDPOINT,
+    private val endpoint: String,
     private val okHttpClient: OkHttpClient,
-    private val moshi: Moshi =
-        Moshi.Builder().add(Message.Error).add(KotlinJsonAdapterFactory()).build(),
+    private val moshi: Moshi,
     private val cookieJar: CookieJar
 ) : WebSocketListener() {
   companion object {
-    private const val DGG_ENDPOINT = "wss://www.destiny.gg/ws"
     private const val UNKNOWN_TYPE = "UNK"
   }
 

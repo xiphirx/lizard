@@ -18,6 +18,7 @@ ext {
   final conductorVersion = '2.1.4'
   final moshiVersion = '1.6.0'
   final rxBindingVersion = '2.1.1'
+  final daggerVersion = '2.17'
 
   plugs = [
       agp             : "com.android.tools.build:gradle:$versions.agp",
@@ -43,6 +44,9 @@ ext {
       retrofitRxAdapter       : "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion",
       retrofitMoshiConverter  : "com.squareup.retrofit2:converter-moshi:$retrofitVersion",
       retrofitScalarsConverter: "com.squareup.retrofit2:converter-scalars:$retrofitVersion",
+
+      dagger                  : "com.google.dagger:dagger:$daggerVersion",
+      daggerCompiler          : "com.google.dagger:dagger-compiler:$daggerVersion",
 
       mosby                   : "com.hannesdorfmann.mosby3:mvi:3.1.0",
 

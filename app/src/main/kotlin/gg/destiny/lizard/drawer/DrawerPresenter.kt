@@ -1,6 +1,5 @@
 package gg.destiny.lizard.drawer
 
-import gg.destiny.lizard.App
 import gg.destiny.lizard.account.AccountInfo
 import gg.destiny.lizard.account.AccountManager
 import gg.destiny.lizard.api.DestinyApi
@@ -8,9 +7,10 @@ import gg.destiny.lizard.base.mvi.BasePresenter
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class DrawerPresenter(
-    private val accountManager: AccountManager = App.accountManager
+class DrawerPresenter @Inject constructor(
+    private val accountManager: AccountManager
 ) : BasePresenter<DrawerView, DrawerModel>() {
   override fun bindIntents(scheduler: Scheduler): Observable<DrawerModel> {
     val accountStatus = intent { it.firstLoad() }

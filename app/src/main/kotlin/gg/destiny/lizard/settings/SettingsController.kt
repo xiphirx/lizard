@@ -1,6 +1,5 @@
 package gg.destiny.lizard.settings
 
-import android.support.annotation.StringRes
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -10,23 +9,32 @@ import com.github.ajalt.flexadapter.register
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxrelay2.PublishRelay
 import com.jakewharton.rxrelay2.Relay
+import gg.destiny.lizard.App
 import gg.destiny.lizard.R
 import gg.destiny.lizard.base.controller.BaseController
 import gg.destiny.lizard.base.mvi.BaseView
-import gg.destiny.lizard.core.settings.*
+import gg.destiny.lizard.core.settings.BooleanSetting
+import gg.destiny.lizard.core.settings.SettingSpec
+import gg.destiny.lizard.core.settings.SettingsModel
+import gg.destiny.lizard.core.settings.StaticTextSetting
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.controller_settings.view.settings_recycler
 import kotlinx.android.synthetic.main.include_app_bar.view.toolbar
 import kotlinx.android.synthetic.main.item_settings_boolean.view.settings_item_boolean_container
 import kotlinx.android.synthetic.main.item_settings_boolean.view.settings_item_boolean_switch
 import kotlinx.android.synthetic.main.item_settings_boolean.view.settings_item_boolean_title
-import kotlinx.android.synthetic.main.item_settings_static_text.view.*
+import kotlinx.android.synthetic.main.item_settings_static_text.view.settings_item_static_text_subtitle
+import kotlinx.android.synthetic.main.item_settings_static_text.view.settings_item_static_text_title
 
 interface SettingsView : BaseView<SettingsModel> {
   val booleanSettingToggles: Observable<BooleanSetting>
 }
 
 class SettingsController : BaseController<SettingsView, SettingsModel, SettingsPresenter>(), SettingsView {
+  init {
+    App.get().appComponent.inject(this)
+  }
+
   override val booleanSettingToggles: Relay<BooleanSetting> = PublishRelay.create()
 
   private val settingsAdapter = FlexAdapter<SettingSpec<out Any>>().apply {
@@ -45,8 +53,6 @@ class SettingsController : BaseController<SettingsView, SettingsModel, SettingsP
       view.settings_item_static_text_subtitle.text = setting.value
     }
   }
-
-  override fun createPresenter() = SettingsPresenter()
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
     return inflater.inflate(R.layout.controller_settings, container, false).apply {

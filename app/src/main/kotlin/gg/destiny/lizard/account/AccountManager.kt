@@ -1,13 +1,13 @@
 package gg.destiny.lizard.account
 
 import com.jakewharton.rxrelay2.BehaviorRelay
-import gg.destiny.lizard.App
 import gg.destiny.lizard.api.DestinyApi
 import io.reactivex.Observable
+import javax.inject.Inject
 
-class AccountManager(
-    private val destinyApi: DestinyApi = DestinyApi(),
-    private val accountInfoStorage: AccountInfoStorage = App.accountInfoStorage
+class AccountManager @Inject constructor(
+    private val destinyApi: DestinyApi,
+    private val accountInfoStorage: AccountInfoStorage
 ) {
   private val accountInfoRelay = BehaviorRelay.create<AccountInfo>()
 

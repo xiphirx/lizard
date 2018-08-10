@@ -1,19 +1,23 @@
 apply plugin: "kotlin"
+apply plugin: "kotlin-kapt"
 
 dependencies {
-    implementation deps.kotlinStdlib
+  implementation deps.dagger
+  kapt deps.daggerCompiler
 
-    implementation deps.rxJava
-    implementation deps.rxRelay
+  implementation deps.kotlinStdlib
 
-    implementation deps.moshi
-    implementation deps.moshiKotlin
+  implementation deps.rxJava
+  implementation deps.rxRelay
 
-    implementation deps.retrofit
-    implementation deps.retrofitRxAdapter
-    implementation deps.retrofitScalarsConverter
-    implementation deps.retrofitMoshiConverter
+  implementation deps.moshi
+  implementation deps.moshiKotlin
 
-    implementation deps.okhttp
-    implementation deps.okhttpLogInterceptor
+  implementation deps.retrofit
+  implementation deps.retrofitRxAdapter
+  implementation deps.retrofitScalarsConverter
+  implementation deps.retrofitMoshiConverter
+
+  implementation deps.okhttp
+  implementation deps.okhttpLogInterceptor
 }

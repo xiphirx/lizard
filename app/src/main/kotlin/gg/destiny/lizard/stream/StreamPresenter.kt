@@ -1,28 +1,21 @@
 package gg.destiny.lizard.stream
 
-import gg.destiny.lizard.App
-import gg.destiny.lizard.account.AccountCookieJar
 import gg.destiny.lizard.account.AccountManager
 import gg.destiny.lizard.api.TwitchTvApi
 import gg.destiny.lizard.base.mvi.BasePresenter
-import gg.destiny.lizard.chat.SharedPreferencesChatStorage
 import gg.destiny.lizard.core.chat.Chat
-import gg.destiny.lizard.core.chat.ChatGuiApi
 import gg.destiny.lizard.core.chat.ChatGuiPackage
-import gg.destiny.lizard.core.chat.ChatSocket
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
+import javax.inject.Named
 
-class StreamPresenter(
-    private val streamKey: String = "destiny",
-    private val twitchTvApi: TwitchTvApi = App.twitchTv,
-    private val chat: Chat = Chat(
-        socket = ChatSocket(
-            okHttpClient = App.okHttp, moshi = App.moshi, cookieJar = AccountCookieJar()),
-        guiApi = ChatGuiApi(okHttpClient = App.okHttp, moshi = App.moshi),
-        storage = SharedPreferencesChatStorage()),
-    private val accountManager: AccountManager = App.accountManager
+class StreamPresenter @Inject constructor(
+    @Named("stream-key") private val streamKey: String,
+    private val twitchTvApi: TwitchTvApi,
+    private val chat: Chat,
+    private val accountManager: AccountManager
 ) : BasePresenter<StreamView, StreamModel>() {
   override fun bindIntents(scheduler: Scheduler): Observable<StreamModel> {
     val streamInformation = intent { Observable.just(true) }

@@ -19,11 +19,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Url
 
-class DestinyApi(
-    okHttpClient: OkHttpClient = App.okHttp,
-    cookieJar: CookieJar = App.accountCookieJar,
-    moshi: Moshi = App.moshi
-) {
+class DestinyApi(okHttpClient: OkHttpClient, cookieJar: CookieJar, moshi: Moshi) {
   companion object {
     const val HOST = "www.destiny.gg"
     const val BASE_URL = "https://$HOST"
