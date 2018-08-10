@@ -82,10 +82,4 @@ class AppModule(private val application: App) {
   fun providesStreamKey(): String {
     return "destiny"
   }
-
-//  @Provides
-//  @Singleton
-//  fun provideAccountManager(): AccountManager {
-//    return AccountManager()
-//  }
 }

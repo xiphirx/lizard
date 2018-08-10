@@ -40,7 +40,7 @@ class App : Application() {
         .chatModule(ChatModule())
         .networkModule(NetworkModule())
         .build()
-    
+
     if (BuildConfig.DEBUG) {
       StrictMode.enableDefaults()
       Timber.plant(Timber.DebugTree())
