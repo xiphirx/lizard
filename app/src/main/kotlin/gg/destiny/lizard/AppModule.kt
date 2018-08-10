@@ -10,6 +10,7 @@ import gg.destiny.lizard.account.AccountCookieJar
 import gg.destiny.lizard.chat.SharedPreferencesChatStorage
 import gg.destiny.lizard.core.chat.ChatStorage
 import okhttp3.CookieJar
+import java.io.File
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -36,18 +37,23 @@ class AppModule(private val application: App) {
 
   @Provides
   @Singleton
-  fun provideChatStorage(): ChatStorage {
-    return SharedPreferencesChatStorage()
-  }
-
-  @Provides
-  @Singleton
   fun provideCookieJar(
       moshi: Moshi,
       @Named("cookie-jar") preferences: SharedPreferences
   ): CookieJar {
     return AccountCookieJar(moshi, preferences)
   }
+
+  @Provides
+  @Singleton
+  fun provideChatStorage(
+      @Named("chat-gui-storage") preferences: SharedPreferences,
+      @Named("chat-gui-storage") directory: File,
+      moshi: Moshi
+  ): ChatStorage {
+    return SharedPreferencesChatStorage(preferences, directory, moshi)
+  }
+
 
   @Provides
   @Singleton
@@ -68,6 +74,20 @@ class AppModule(private val application: App) {
   @Named("settings")
   fun provideSettingsPreferences(): SharedPreferences {
     return application.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+  }
+
+  @Provides
+  @Singleton
+  @Named("chat-gui-storage")
+  fun provideChatStoragePreferences(): SharedPreferences {
+    return application.getSharedPreferences("chat_gui_storage", Context.MODE_PRIVATE)
+  }
+
+  @Provides
+  @Singleton
+  @Named("chat-gui-storage")
+  fun provideChatStorageDirectory(): File {
+    return application.getDir("chat_gui_storage", Context.MODE_PRIVATE)
   }
 
   @Provides
