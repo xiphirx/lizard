@@ -2,4 +2,8 @@
 <resources>
   <string name="chat.text_hint">Say something…</string>
   <string name="chat.text_hint_banned">You are currently banned</string>
+  <plurals name="chat.connection_message">
+    <item quantity="one">Connected with %1$d other user.</item>
+    <item quantity="other">Connected with %1$d other users.</item>
+  </plurals>
 </resources>

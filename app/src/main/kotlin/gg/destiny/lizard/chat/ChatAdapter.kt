@@ -18,6 +18,7 @@ import gg.destiny.lizard.account.AccountFeature
 import gg.destiny.lizard.base.text.Spanner
 import gg.destiny.lizard.core.chat.ChatGuiPackage
 import gg.destiny.lizard.core.chat.ChatSocket
+import kotlinx.android.synthetic.main.item_chat_connection.view.chat_connection_message
 import kotlinx.android.synthetic.main.item_chat_message.view.chat_message_message
 
 data class ComboMessage(
@@ -60,6 +61,16 @@ fun createChatAdapter(chatGuiPackage: () -> ChatGuiPackage, highlightNick: () ->
 
     register<ComboMessage>(R.layout.item_chat_message) { combo, view, _ ->
       combo.bind(view.chat_message_message)
+    }
+
+    register<ChatSocket.Message.Names>(R.layout.item_chat_connection) { message, view, _ ->
+      view.chat_connection_message.text =
+          view.context
+              .resources
+              .getQuantityString(
+                  R.plurals.chat_connection_message,
+                  message.connectioncount,
+                  message.connectioncount)
     }
   }
 }

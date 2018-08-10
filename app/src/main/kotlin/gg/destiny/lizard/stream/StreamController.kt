@@ -208,6 +208,7 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
       is ChatSocket.Message.Names -> {
         chatUserCount = message.connectioncount
         updateChatUserCount(chatUserCount)
+        chatAdapter.items.add(message)
       }
       is ChatSocket.Message.UserMessage -> handleUserChatMessage(message)
       is ChatSocket.Message.Join -> updateChatUserCount(++chatUserCount)
