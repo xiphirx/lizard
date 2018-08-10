@@ -19,8 +19,6 @@ class App : Application() {
 
   companion object {
     private lateinit var INSTANCE: App
-    val moshi: Moshi by lazy { Moshi.Builder().add(KotlinJsonAdapterFactory()).build() }
-
     fun get(): App {
       return INSTANCE
     }
