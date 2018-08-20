@@ -2,11 +2,13 @@ package gg.destiny.lizard.chat
 
 import android.animation.ObjectAnimator
 import android.graphics.Color
+import android.graphics.Typeface
 import android.support.v4.content.ContextCompat
 import android.support.v4.text.util.LinkifyCompat
 import android.support.v7.widget.RecyclerView
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.text.style.TextAppearanceSpan
 import android.text.util.Linkify
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -78,25 +80,39 @@ fun createChatAdapter(chatGuiPackage: () -> ChatGuiPackage, highlightNick: () ->
   }
 }
 
+private val chatTextColorSpan = ForegroundColorSpan(0xFFAAAAAA.toInt())
+private val greenTextColorSpan = ForegroundColorSpan(0xFF6CA528.toInt())
+private val meTextStyleSpan = StyleSpan(Typeface.ITALIC)
+
 private fun ChatSocket.Message.UserMessage.bind(
     packageInfo: ChatGuiPackage,
     message: TextView,
     isContinuation: Boolean
 ) {
   val spanner = Spanner()
+  val isMe = data.startsWith("/me ")
   if (!isContinuation) {
     spanner
         .pushSpan(ForegroundColorSpan(colorForFeatures(features)))
         .append(nick)
         .popSpan()
-        .append(": ")
+
+    if (!isMe) {
+      spanner.append(": ")
+    }
   } else {
     spanner.pushSpan(ForegroundColorSpan(0xFF333333.toInt())).append("> ").popSpan()
   }
-  spanner.pushSpan(
-      ForegroundColorSpan(
-          if (data.firstOrNull() == '>') 0xFF6CA528.toInt() else 0xFFAAAAAA.toInt()))
 
+  spanner.pushSpan(
+      when (data.firstOrNull()) {
+        '>' -> greenTextColorSpan
+        else -> chatTextColorSpan
+      })
+
+  if (isMe) {
+    spanner.pushSpan(meTextStyleSpan)
+  }
 
   data.split(' ')
       .forEachIndexed { index, s ->
@@ -111,7 +127,7 @@ private fun ChatSocket.Message.UserMessage.bind(
           spanner.append(' ')
               .pushPopSpan(span)
               .append(' ')
-        } else {
+        } else if (!isMe || s != "/me") {
           spanner.append(if (index != 0) " $s" else s)
         }
       }
