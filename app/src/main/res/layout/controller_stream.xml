@@ -71,6 +71,10 @@
       android:layout_width="match_parent"
       android:layout_height="0dp"
       android:layout_weight="1"/>
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="@color/white10"/>
   <android.support.design.widget.TextInputLayout
       android:id="@+id/stream_chat_text_input_layout"
       android:layout_width="match_parent"
@@ -84,6 +88,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/chat.text_hint"
+        android:background="@null"
+        android:padding="8dp"
         android:imeOptions="actionSend"
         android:maxLines="1"
         android:inputType="textAutoCorrect"/>
