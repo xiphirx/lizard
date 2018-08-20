@@ -45,8 +45,11 @@ data class ComboMessage(
 fun createChatAdapter(chatGuiPackage: () -> ChatGuiPackage, highlightNick: () -> String?)
     : FlexAdapter<Any> {
   return FlexAdapter<Any>().apply {
-    register<ChatSocket.Message.UserMessage>(R.layout.item_chat_message) { message, view, _ ->
-      message.bind(chatGuiPackage(), view.chat_message_message)
+    register<ChatSocket.Message.UserMessage>(R.layout.item_chat_message) { message, view, i ->
+      val previousMessage = if (i > 0) items[i - 1] else null
+      val continuationMessage =
+          previousMessage is ChatSocket.Message.UserMessage && previousMessage.nick == message.nick
+      message.bind(chatGuiPackage(), view.chat_message_message, continuationMessage)
 
       val nick = highlightNick()
       val data = message.data
@@ -75,15 +78,25 @@ fun createChatAdapter(chatGuiPackage: () -> ChatGuiPackage, highlightNick: () ->
   }
 }
 
-private fun ChatSocket.Message.UserMessage.bind(packageInfo: ChatGuiPackage, message: TextView) {
+private fun ChatSocket.Message.UserMessage.bind(
+    packageInfo: ChatGuiPackage,
+    message: TextView,
+    isContinuation: Boolean
+) {
   val spanner = Spanner()
-      .pushSpan(ForegroundColorSpan(colorForFeatures(features)))
-      .append(nick)
-      .popSpan()
-      .pushSpan(
-          ForegroundColorSpan(
-              if (data.firstOrNull() == '>') 0xFF6CA528.toInt() else 0xFFAAAAAA.toInt()))
-      .append(": ")
+  if (!isContinuation) {
+    spanner
+        .pushSpan(ForegroundColorSpan(colorForFeatures(features)))
+        .append(nick)
+        .popSpan()
+        .append(": ")
+  } else {
+    spanner.pushSpan(ForegroundColorSpan(0xFF333333.toInt())).append("> ").popSpan()
+  }
+  spanner.pushSpan(
+      ForegroundColorSpan(
+          if (data.firstOrNull() == '>') 0xFF6CA528.toInt() else 0xFFAAAAAA.toInt()))
+
 
   data.split(' ')
       .forEachIndexed { index, s ->
