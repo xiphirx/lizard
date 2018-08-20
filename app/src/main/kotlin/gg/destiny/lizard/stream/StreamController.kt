@@ -2,6 +2,8 @@ package gg.destiny.lizard.stream
 
 import android.graphics.BitmapFactory
 import android.support.annotation.StringRes
+import android.support.design.widget.TextInputEditText
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE
@@ -14,6 +16,8 @@ import android.view.inputmethod.EditorInfo
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.github.ajalt.flexadapter.FlexAdapter
+import com.github.ajalt.flexadapter.register
 import com.github.ajalt.timberkt.d
 import com.github.ajalt.timberkt.e
 import com.jakewharton.rxbinding2.widget.RxTextView
@@ -22,18 +26,21 @@ import gg.destiny.lizard.App
 import gg.destiny.lizard.R
 import gg.destiny.lizard.base.controller.BaseController
 import gg.destiny.lizard.base.mvi.BaseView
+import gg.destiny.lizard.base.widget.EmoteView
 import gg.destiny.lizard.chat.ComboMessage
 import gg.destiny.lizard.chat.EmoteDrawable
 import gg.destiny.lizard.chat.EmoteSpan
 import gg.destiny.lizard.chat.createChatAdapter
 import gg.destiny.lizard.core.chat.ChatGuiPackage
 import gg.destiny.lizard.core.chat.ChatSocket
+import gg.destiny.lizard.core.chat.Emote
 import gg.destiny.lizard.core.chat.emptyPackage
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.controller_stream.view.*
+import kotlinx.android.synthetic.main.item_chat_emote.view.chat_emote_image
 
 interface StreamView : BaseView<StreamModel> {
   val authoredChatMessages: Observable<String>
@@ -57,8 +64,24 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
   private var chatGuiPackage: ChatGuiPackage = emptyPackage
   private var highlightNick: String? = null
   private var lockAutoScroll = true
+  private lateinit var chatTextEditText: TextInputEditText
   private lateinit var chatRecyclerView: RecyclerView
   private lateinit var chatLayoutManager: LinearLayoutManager
+  private lateinit var chatEmoteRecyclerView: RecyclerView
+  private lateinit var chatEmoteLayoutManager: GridLayoutManager
+
+  private val chatEmoteClickListener = View.OnClickListener { v ->
+    v as? EmoteView ?: return@OnClickListener
+    val emote = v.emote ?: return@OnClickListener
+    chatTextEditText.append(" ${emote.name}")
+  }
+
+  private val chatEmoteAdapter = FlexAdapter<Emote>().apply {
+    register<Emote>(R.layout.item_chat_emote) { emote, view, _ ->
+      view.chat_emote_image.emote = emote
+      view.chat_emote_image.setOnClickListener(chatEmoteClickListener)
+    }
+  }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
     return inflater.inflate(R.layout.controller_stream, container, false).apply {
@@ -85,6 +108,21 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
         }
       }
 
+      chatEmoteLayoutManager = GridLayoutManager(context, 4)
+      chatEmoteRecyclerView = stream_chat_emote_recycler_view.apply {
+        adapter = chatEmoteAdapter
+        layoutManager = chatEmoteLayoutManager
+      }
+
+      stream_chat_emote_button.setOnClickListener {
+        stream_chat_emote_recycler_view.visibility =
+            if (stream_chat_emote_recycler_view.visibility == View.GONE) {
+              View.VISIBLE
+            } else {
+              View.GONE
+            }
+      }
+
       with(stream_web_view.settings) {
         javaScriptEnabled = true
         mediaPlaybackRequiresUserGesture = false
@@ -100,7 +138,8 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
         }
       }
 
-      RxTextView.editorActionEvents(stream_chat_edit_text)
+      chatTextEditText = stream_chat_edit_text
+      RxTextView.editorActionEvents(chatTextEditText)
           .filter {
             it.actionId() == EditorInfo.IME_ACTION_SEND ||
                 it.keyEvent()?.keyCode == KeyEvent.KEYCODE_ENTER
@@ -171,6 +210,9 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe { EmoteDrawable.texture = it }
+
+    chatEmoteAdapter.items.clear()
+    chatEmoteAdapter.items.addAll(chatGuiPackage.emoteMap.values)
   }
 
   private fun setChatCapabilities(editable: Boolean, @StringRes hint: Int) {
