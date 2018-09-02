@@ -157,8 +157,7 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
         layout.stream_video_container.visibility = View.VISIBLE
         layout.stream_viewer_num.text = "${model.streamStatus.viewerCount}"
         registerChatObservable(model.streamStatus.chatMessages)
-//        setupStream(model.streamStatus.url)
-        setupStream(null)
+        setupStream(model.streamStatus.url)
       }
       is StreamStatus.Offline -> {
         layout.stream_video_container.visibility = View.GONE
