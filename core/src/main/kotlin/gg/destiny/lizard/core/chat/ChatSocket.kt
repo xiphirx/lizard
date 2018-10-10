@@ -125,6 +125,9 @@ class ChatSocket(
     val type = Message.of(message.substringBefore(" ", UNKNOWN_TYPE))
     val data = message.substringAfter(' ')
     L { "Message: $message" }
+    if (message.substringBefore(" ") == "ERR") {
+      return
+    }
     relay.accept(moshi.adapter(type.java).fromJson(data)!!)
   }
 
