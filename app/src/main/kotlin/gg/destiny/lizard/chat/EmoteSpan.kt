@@ -5,7 +5,6 @@ import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.Paint
 import android.graphics.Rect
-import android.graphics.Region
 import android.text.style.DynamicDrawableSpan
 import android.text.style.UpdateAppearance
 import android.util.Property
@@ -93,7 +92,7 @@ class EmoteSpan(val emote: Emote) : DynamicDrawableSpan(), UpdateAppearance {
       bounds.set(drawable.bounds)
       bounds.offset(x.toInt(), newY.toInt())
       clipBounds.union(bounds)
-      canvas.clipRect(clipBounds, Region.Op.REPLACE)
+      canvas.clipRect(clipBounds)
       canvas.translate(x + translateX, newY)
       canvas.rotate(rotation)
       if (hueShift == 0f) {
