@@ -59,10 +59,12 @@ dependencies {
   implementation deps.annotations
   implementation deps.kotlinStdlib
   implementation deps.timberkt
-  implementation deps.glide
   implementation deps.flexadapter
   implementation deps.jodatime
   implementation deps.mosby
+
+  implementation deps.glide
+  kapt deps.glideCompiler
 
   implementation deps.dagger
   kapt deps.daggerCompiler
