@@ -5,7 +5,6 @@ import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.View
 import gg.destiny.lizard.base.extensions.scope
-import gg.destiny.lizard.chat.EmoteDrawable
 import gg.destiny.lizard.core.chat.Emote
 
 class EmoteView @JvmOverloads constructor(
@@ -33,8 +32,8 @@ class EmoteView @JvmOverloads constructor(
     emote?.let {
       canvas.scope {
         canvas.translate(paddingLeft.toFloat(), paddingTop.toFloat())
-        EmoteDrawable.emote = emote
-        EmoteDrawable.draw(canvas)
+//        EmoteDrawable.emote = emote
+//        EmoteDrawable.draw(canvas)
       }
     }
   }

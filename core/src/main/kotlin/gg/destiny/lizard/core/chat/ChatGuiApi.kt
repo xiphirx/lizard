@@ -9,80 +9,57 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 import java.util.regex.Pattern
 
-class ChatGuiApi(baseUrl: String, okHttpClient: OkHttpClient, moshi: Moshi) {
-  companion object {
-    private val PATTERN_EMOTE_BLOCK =
-        Pattern.compile(
-            "\\.chat-emote\\.chat-emote-([A-Za-z0-9]*)\\s*\\{([a-zA-Z:;0-9\\s\\-]*)\\}",
-            Pattern.DOTALL or Pattern.MULTILINE)
-    private val PATTERN_POSITION =
-        Pattern.compile("background-position:\\s*([\\-0-9]*)(?:px)?\\s*([\\-0-9]*)(?:px)?")
-    private val PATTERN_WIDTH = Pattern.compile("width:\\s*([0-9]*)(?:px)?")
-    private val PATTERN_HEIGHT = Pattern.compile("height:\\s*([0-9]*)(?:px)?")
+class ChatGuiApi(githubBaseUrl: String, cdnBaseUrl: String, okHttpClient: OkHttpClient, moshi: Moshi) {
+  private interface CdnEndpoints{
+    @GET("{version}/emotes/emotes.json")
+    fun emotes(@Path("version") version: String): Observable<List<ApiEmote>>
   }
 
-  private interface Endpoints {
-    @GET("assets/emotes/emoticons.scss")
-    fun emoteList(): Observable<String>
-
-    @GET("assets/emotes/emoticons.png")
-    fun emoteTexture(): Observable<ResponseBody>
-
+  private interface GithubEndpoints {
     @GET("package.json")
     fun packageInfo(): Observable<PackageInfo>
   }
 
   data class PackageInfo(val version: String)
 
-  private val endpoints: Endpoints
+  private val githubEndpoints: GithubEndpoints
+  private val cdnEndpoints: CdnEndpoints
 
   init {
-    val retrofit = Retrofit.Builder()
-        .baseUrl(baseUrl)
+    val githubRetrofit = Retrofit.Builder()
+        .baseUrl(githubBaseUrl)
         .client(okHttpClient)
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .addConverterFactory(ScalarsConverterFactory.create())
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
 
-    endpoints = retrofit.create(Endpoints::class.java)
+    githubEndpoints = githubRetrofit.create(GithubEndpoints::class.java)
+
+    val cdnRetrofit = Retrofit.Builder()
+        .baseUrl(cdnBaseUrl)
+        .client(okHttpClient)
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+        .addConverterFactory(ScalarsConverterFactory.create())
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .build()
+
+    cdnEndpoints = cdnRetrofit.create(CdnEndpoints::class.java)
   }
 
-  fun getEmoteList(): Observable<List<Emote>> = endpoints.emoteList().map { parseScss(it) }
+  data class ApiImageData(val url: String, val name: String, val width: Int, val height: Int)
+  data class ApiEmote(val prefix: String, val image: List<ApiImageData>)
 
-  fun getEmoteTexture() = endpoints.emoteTexture()
-
-  fun getPackageInfo() = endpoints.packageInfo()
-
-  private fun parseScss(scss: String): List<Emote> {
-    val emoteList = mutableListOf<Emote>()
-    val blockMatcher = PATTERN_EMOTE_BLOCK.matcher(scss)
-    while (blockMatcher.find()) {
-      val name = blockMatcher.group(1)
-      val block = blockMatcher.group(2)
-
-      val positionMatcher = PATTERN_POSITION.matcher(block)
-      if (!positionMatcher.find()) {
-        throw IllegalStateException("$block doesnt match position matcher")
+  fun getEmoteList(version: String): Observable<List<Emote>> = cdnEndpoints.emotes(version)
+      .map {
+        it.map {
+          val imageData = it.image.first()
+          Emote(it.prefix, imageData.width, imageData.height, imageData.url)
+        }
       }
-      val x = Integer.parseInt(positionMatcher.group(1))
-      val y = Integer.parseInt(positionMatcher.group(2))
 
-      val widthMatcher = PATTERN_WIDTH.matcher(block)
-      if (!widthMatcher.find()) {
-        throw IllegalStateException("$block doesnt match width matcher")
-      }
-      val width = Integer.parseInt(widthMatcher.group(1))
-
-      val heightMatcher = PATTERN_HEIGHT.matcher(block)
-      if (!heightMatcher.find()) {
-        throw IllegalStateException("$block doesnt match height matcher")
-      }
-      val height = Integer.parseInt(heightMatcher.group(1))
-      emoteList.add(Emote(name, x, y, width, height))
-    }
-    return emoteList
-  }
+  fun getPackageInfo() = githubEndpoints.packageInfo()
 }

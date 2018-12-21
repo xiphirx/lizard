@@ -1,18 +1,29 @@
 package gg.destiny.lizard.chat
 
+import android.content.Context
 import android.graphics.Canvas
+import android.graphics.ColorFilter
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.Paint
+import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.Region
+import android.graphics.drawable.Drawable
 import android.text.style.DynamicDrawableSpan
 import android.text.style.UpdateAppearance
 import android.util.Property
+import android.view.View
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
+import gg.destiny.lizard.GlideApp
+import gg.destiny.lizard.base.extensions.dp
 import gg.destiny.lizard.base.extensions.scope
 import gg.destiny.lizard.core.chat.Emote
 
-class EmoteSpan(val emote: Emote) : DynamicDrawableSpan(), UpdateAppearance {
+class EmoteSpan(context: Context, val emote: Emote, val invalidateListener: (() -> Unit)? = null) : DynamicDrawableSpan(), UpdateAppearance {
   companion object {
     const val lR = 0.213f
     const val lG = 0.715f
@@ -20,10 +31,20 @@ class EmoteSpan(val emote: Emote) : DynamicDrawableSpan(), UpdateAppearance {
     const val sA = 0.143f
     const val sB = 0.140f
     const val sC = -0.283f
+    private val workBounds = Rect()
   }
 
-  private val bounds: Rect = Rect()
   private val colorMatrix = ColorMatrix()
+  private val emoteBounds = Rect(0, 0, emote.w.dp(context), emote.h.dp(context))
+  private var emoteDrawable: Drawable = BoundsDrawable().apply { bounds = emoteBounds }
+  val glideTarget = object : SimpleTarget<Drawable>() {
+    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+      resource.bounds.set(emoteBounds)
+      emoteDrawable = resource
+      invalidateListener?.invoke()
+    }
+  }
+
   var rotation: Float = 0f
   var translateX: Float = 0f
   var hueShift: Float = 0f
@@ -52,7 +73,7 @@ class EmoteSpan(val emote: Emote) : DynamicDrawableSpan(), UpdateAppearance {
     }
   }
 
-  override fun getDrawable() = EmoteDrawable
+  override fun getDrawable() = emoteDrawable
 
   override fun getSize(
       paint: Paint,
@@ -61,9 +82,6 @@ class EmoteSpan(val emote: Emote) : DynamicDrawableSpan(), UpdateAppearance {
       end: Int,
       fm: Paint.FontMetricsInt?
   ): Int {
-    drawable.emote = emote
-    val rect = drawable.bounds
-
     if (fm != null) {
       val paintFm = paint.fontMetricsInt
       fm.ascent = paintFm.ascent
@@ -72,7 +90,18 @@ class EmoteSpan(val emote: Emote) : DynamicDrawableSpan(), UpdateAppearance {
       fm.bottom = paintFm.bottom
     }
 
-    return rect.width()
+    return emoteBounds.width()
+  }
+
+  fun setVisible(context: Context, status: Boolean) {
+    if (status) {
+      GlideApp.with(context)
+          .load(emote.url)
+          .diskCacheStrategy(DiskCacheStrategy.DATA)
+          .into(glideTarget)
+    } else {
+      Glide.with(context).clear(glideTarget)
+    }
   }
 
   override fun draw(
@@ -85,14 +114,14 @@ class EmoteSpan(val emote: Emote) : DynamicDrawableSpan(), UpdateAppearance {
       y: Int,
       bottom: Int,
       paint: Paint) {
+    if (drawable is BoundsDrawable) return
     canvas.scope {
-      drawable.emote = emote
       val lineHeight = bottom - top
-      val newY = top + (lineHeight / 2f - drawable.intrinsicHeight / 2f)
+      val newY = top + (lineHeight / 2f) - (drawable.bounds.height() / 2f)
       val clipBounds = canvas.clipBounds
-      bounds.set(drawable.bounds)
-      bounds.offset(x.toInt(), newY.toInt())
-      clipBounds.union(bounds)
+      workBounds.set(drawable.bounds)
+      workBounds.offset(x.toInt(), newY.toInt())
+      clipBounds.union(workBounds)
       canvas.clipRect(clipBounds, Region.Op.REPLACE)
       canvas.translate(x + translateX, newY)
       canvas.rotate(rotation)
@@ -117,5 +146,14 @@ class EmoteSpan(val emote: Emote) : DynamicDrawableSpan(), UpdateAppearance {
         lR + cs * -lR + sn * -(1-lR), lG + cs * -lG + sn * lG, lB + cs * (1 - lB) + sn * lB, 0f, 0f,
         0f, 0f, 0f, 1f, 0f
     ))
+  }
+
+  private class BoundsDrawable : Drawable() {
+    override fun draw(canvas: Canvas?) {}
+    override fun setAlpha(alpha: Int) {}
+    override fun getOpacity(): Int {
+      return PixelFormat.OPAQUE
+    }
+    override fun setColorFilter(colorFilter: ColorFilter?) {}
   }
 }

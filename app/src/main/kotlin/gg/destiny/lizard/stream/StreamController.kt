@@ -28,7 +28,6 @@ import gg.destiny.lizard.base.controller.BaseController
 import gg.destiny.lizard.base.mvi.BaseView
 import gg.destiny.lizard.base.widget.EmoteView
 import gg.destiny.lizard.chat.ComboMessage
-import gg.destiny.lizard.chat.EmoteDrawable
 import gg.destiny.lizard.chat.EmoteSpan
 import gg.destiny.lizard.chat.createChatAdapter
 import gg.destiny.lizard.core.chat.ChatGuiPackage
@@ -60,7 +59,6 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
 
   override val authoredChatMessages: PublishRelay<String> = PublishRelay.create<String>()
   private val chatAdapter = createChatAdapter({ chatGuiPackage }, { highlightNick })
-  private var textureLoadingDisposable: Disposable? = null
   private var chatGuiPackage: ChatGuiPackage = emptyPackage
   private var highlightNick: String? = null
   private var lockAutoScroll = true
@@ -188,28 +186,7 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
     if (this.chatGuiPackage == chatGuiPackage) {
       return
     }
-
     this.chatGuiPackage = chatGuiPackage
-
-    if (chatGuiPackage.texturePath.isBlank()) {
-      return
-    }
-
-    val densityDpi = layout.context.resources.displayMetrics.densityDpi
-    textureLoadingDisposable?.dispose()
-    textureLoadingDisposable = Observable.just(chatGuiPackage.texturePath)
-        .map {
-          val options = BitmapFactory.Options().apply {
-            inScreenDensity = densityDpi
-            inTargetDensity = densityDpi
-            inDensity = DisplayMetrics.DENSITY_DEFAULT
-          }
-          BitmapFactory.decodeFile(chatGuiPackage.texturePath, options)
-        }
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe { EmoteDrawable.texture = it }
-
     chatEmoteAdapter.items.clear()
     chatEmoteAdapter.items.addAll(chatGuiPackage.emoteMap.values)
   }
@@ -280,7 +257,7 @@ class StreamController : BaseController<StreamView, StreamModel, StreamPresenter
         trimmedMessage in chatGuiPackage.emoteMap) {
       // Begin a combo
       val emote = chatGuiPackage.emoteMap[trimmedMessage]!!
-      chatAdapter.items[comboIndex] = ComboMessage(EmoteSpan(emote))
+      chatAdapter.items[comboIndex] = ComboMessage(EmoteSpan(App.get().applicationContext, emote))
       chatAdapter.notifyItemChanged(comboIndex)
     } else {
       chatAdapter.items.add(message)

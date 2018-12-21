@@ -5,7 +5,6 @@ import android.os.StrictMode
 import com.github.ajalt.timberkt.d
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import gg.destiny.lizard.chat.EmoteDrawable
 import gg.destiny.lizard.core.chat.ChatModule
 import gg.destiny.lizard.core.logging.Logger
 import gg.destiny.lizard.core.network.NetworkModule
@@ -49,7 +48,5 @@ class App : Application() {
 //    }
 
     JodaTimeAndroid.init(this)
-
-    EmoteDrawable.density = resources.displayMetrics.density
   }
 }

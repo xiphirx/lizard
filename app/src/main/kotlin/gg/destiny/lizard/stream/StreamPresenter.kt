@@ -57,7 +57,7 @@ class StreamPresenter @Inject constructor(
     return Observable.merge(
         streamInformation, chatParticipationStatus, authoredChatMessages, chatGuiPackageUpdates)
         .observeOn(scheduler)
-        .scan(StreamModel(), { prev, state -> reduce(prev, state) })
+        .scan(StreamModel()) { prev, state -> reduce(prev, state) }
   }
 
   private fun reduce(previousModel: StreamModel, partialState: Any): StreamModel {

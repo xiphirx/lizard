@@ -40,31 +40,14 @@ class Chat(
           .filter { (currentPackage, newVersion) ->
             currentPackage.emoteMap.isEmpty() || currentPackage.version != newVersion
           }
-          .flatMap({ guiApi.getEmoteList() }, { (_, version), emotes -> version to emotes })
-          .flatMap({ downloadEmoteTexture(it.first) }, { emotes, texture -> emotes to texture })
-          .map { (emoteList, texturePath) ->
-            val (version, emotes) = emoteList
-            ChatGuiPackage(version, texturePath, emotes.associate { it.name to it })
-          }
+          .flatMap({ guiApi.getEmoteList(it.second) }, { (_, version), emotes -> version to emotes })
+          .map { (version, emoteList) -> ChatGuiPackage(version, emoteList.associate { it.name to it }) }
           .subscribe({
             storage.storeGuiPackageInfo(it)
             chatGuiPackageRelay.accept(it)
             updateDisposable = null
           }, { e -> L(e) { "Couldn't update gui package info" } })
     }
-  }
-
-  private fun downloadEmoteTexture(version: String): Observable<String> {
-    return guiApi.getEmoteTexture()
-        .map {
-          val textureFile = storage.getEmoteTextureFile(version)
-          Okio.buffer(Okio.source(it.byteStream())).use { buffer ->
-            Okio.sink(textureFile).use { sink ->
-              buffer.readAll(sink)
-            }
-          }
-          textureFile.absolutePath
-        }
   }
 
   fun guiPackageInfo(): Observable<ChatGuiPackage> = chatGuiPackageRelay

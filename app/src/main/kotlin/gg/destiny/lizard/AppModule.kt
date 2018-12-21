@@ -51,10 +51,9 @@ class AppModule(private val application: App) {
   @Singleton
   fun provideChatStorage(
       @Named("chat-gui-storage") preferences: SharedPreferences,
-      @Named("chat-gui-storage") directory: File,
       moshi: Moshi
   ): ChatStorage {
-    return SharedPreferencesChatStorage(preferences, directory, moshi)
+    return SharedPreferencesChatStorage(preferences, moshi)
   }
 
   @Provides

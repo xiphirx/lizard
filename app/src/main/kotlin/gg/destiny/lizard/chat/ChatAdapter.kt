@@ -15,6 +15,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.TextView
 import com.github.ajalt.flexadapter.FlexAdapter
 import com.github.ajalt.flexadapter.register
+import gg.destiny.lizard.App
 import gg.destiny.lizard.R
 import gg.destiny.lizard.account.AccountFeature
 import gg.destiny.lizard.base.text.Spanner
@@ -30,6 +31,7 @@ data class ComboMessage(
     var ticked: Boolean = true
 ) {
   fun bind(view: TextView) {
+    emoteSpan.setVisible(App.get().applicationContext, true)
     view.text = Spanner()
         .pushPopSpan(emoteSpan)
         .pushSpan(ForegroundColorSpan(Color.WHITE))
@@ -118,7 +120,8 @@ private fun ChatSocket.Message.UserMessage.bind(
       .forEachIndexed { index, s ->
         val emote = packageInfo.emoteMap[s]
         if (emote != null) {
-          val span = EmoteSpan(emote)
+          val span = EmoteSpan(App.get().applicationContext, emote, { message.invalidate() })
+          span.setVisible(App.get().applicationContext, true)
           when (emote.name) {
             "REE", "OverRustle" -> rage(span, message)
             "MLADY" -> tipTip(span, message)

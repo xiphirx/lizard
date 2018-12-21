@@ -12,7 +12,8 @@ import javax.inject.Singleton
 class ChatModule {
   companion object {
     private const val DGG_ENDPOINT = "dgg-endpoint"
-    private const val CHAT_GUI_ENDPOINT = "chat-gui-endpoint"
+    private const val DGG_CDN_ENDPOINT = "dgg-cdn-endpoint"
+    private const val CHAT_GUI_GITHUB_ENDPOINT = "chat-gui-endpoint"
   }
 
   @Provides
@@ -24,9 +25,16 @@ class ChatModule {
 
   @Provides
   @Singleton
-  @Named(CHAT_GUI_ENDPOINT)
+  @Named(CHAT_GUI_GITHUB_ENDPOINT)
   fun provideChatGuiEndpoint(): String {
     return "https://raw.githubusercontent.com/destinygg/chat-gui/master/"
+  }
+
+  @Provides
+  @Singleton
+  @Named(DGG_CDN_ENDPOINT)
+  fun provideDggCdnEndpoint(): String {
+    return "https://cdn.destiny.gg/"
   }
 
   @Provides
@@ -50,10 +58,11 @@ class ChatModule {
   @Provides
   @Singleton
   fun provideChatGuiApi(
-      @Named(CHAT_GUI_ENDPOINT) endpoint: String,
+      @Named(CHAT_GUI_GITHUB_ENDPOINT) githubEndpoint: String,
+      @Named(DGG_CDN_ENDPOINT) cdnEndpoint: String,
       okHttpClient: OkHttpClient,
       moshi: Moshi
   ): ChatGuiApi {
-    return ChatGuiApi(endpoint, okHttpClient, moshi)
+    return ChatGuiApi(githubEndpoint, cdnEndpoint, okHttpClient, moshi)
   }
 }
