@@ -122,7 +122,7 @@ class EmoteSpan(context: Context, val emote: Emote, val invalidateListener: (() 
       workBounds.set(drawable.bounds)
       workBounds.offset(x.toInt(), newY.toInt())
       clipBounds.union(workBounds)
-      canvas.clipRect(clipBounds, Region.Op.REPLACE)
+      canvas.clipRect(clipBounds, Region.Op.INTERSECT)
       canvas.translate(x + translateX, newY)
       canvas.rotate(rotation)
       if (hueShift == 0f) {
